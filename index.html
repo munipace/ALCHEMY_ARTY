@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>ALCHEMART</title>
+<style>
+  :root{
+    --bg:#f1f1ee;
+    --panel:rgba(252,252,249,.88);
+    --line:#d5d6d1;
+    --text:#4f514f;
+    --muted:#858883;
+    --lav:#b9bbb6;
+    --lav2:#dedfda;
+    --blue:#c9cfcd;
+    --pink:#d5cfcd;
+    --mint:#d0d6d1;
+    --gold:#d9d6ca;
+    --shadow:0 14px 34px rgba(62,66,62,.09);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    color:var(--text);
+    background:
+      radial-gradient(circle at 20% 0%, rgba(226,228,224,.74), transparent 34%),
+      radial-gradient(circle at 100% 30%, rgba(221,225,222,.56), transparent 32%),
+      linear-gradient(180deg,#fafaf8,#efefec);
+    font-family:ui-rounded,"Hiragino Maru Gothic ProN","Yu Gothic",system-ui,sans-serif;
+  }
+  button{font:inherit}
+  .app{
+    width:min(1180px,100%);
+    margin:0 auto;
+    padding:20px;
+    display:grid;
+    grid-template-columns:minmax(0,1.08fr) minmax(300px,.92fr);
+    gap:18px;
+  }
+  .topbar{
+    grid-column:1/-1;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+    padding:6px 2px;
+  }
+  h1{margin:0;font-size:clamp(28px,4vw,44px);letter-spacing:.18em;font-weight:500;font-style:italic;font-family:"Iowan Old Style","Palatino Linotype",Georgia,"Yu Mincho","Hiragino Mincho ProN",serif;color:#51534f}
+  .sub{color:#858983;font-size:12px;margin-top:6px;letter-spacing:.08em}
+  .badge{
+    padding:8px 12px;border-radius:999px;
+    background:rgba(252,252,249,.74);border:1px solid rgba(195,198,192,.58);
+    color:#666a65;font-size:12px;white-space:nowrap;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid rgba(255,255,255,.95);
+    border-radius:24px;
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(14px);
+  }
+  .draw-card{padding:16px}
+  .stage-head{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  }
+  .step-title{font-weight:700;font-size:18px}
+  .step-help{font-size:12px;color:var(--muted)}
+  .canvas-wrap{
+    position:relative;
+    aspect-ratio:1/1;
+    width:100%;
+    border-radius:20px;
+    overflow:hidden;
+    background:
+      linear-gradient(rgba(112,118,112,.075) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(112,118,112,.075) 1px,transparent 1px),
+      radial-gradient(circle at center,#fefefc 0%,#f8f8f5 60%,#eeefeb 100%);
+    background-size:28px 28px,28px 28px,auto;
+    border:1px solid rgba(185,190,183,.62);
+    touch-action:none;
+  }
+  canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .center-dot{
+    position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;
+    transform:translate(-50%,-50%);background:rgba(92,99,92,.18);pointer-events:none
+  }
+
+  .color-settings{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    margin:0 0 12px;padding:10px 12px;border-radius:15px;
+    background:rgba(249,249,246,.76);border:1px solid rgba(207,210,204,.78);
+  }
+  .color-settings-title{font-size:12px;font-weight:700;color:#696d68;margin-right:2px}
+  .color-choice{
+    display:flex;align-items:center;gap:7px;padding:5px 9px 5px 6px;
+    border-radius:999px;background:rgba(255,255,252,.72);
+    border:1px solid rgba(210,212,207,.78);font-size:11px;color:#747873;cursor:pointer;
+  }
+  .color-choice input[type="color"]{
+    width:25px;height:25px;padding:0;border:0;border-radius:50%;background:none;cursor:pointer;overflow:hidden;
+  }
+  .color-choice input[type="color"]::-webkit-color-swatch-wrapper{padding:0}
+  .color-choice input[type="color"]::-webkit-color-swatch{border:1px solid rgba(70,74,70,.16);border-radius:50%}
+  .color-choice input[type="color"]::-moz-color-swatch{border:1px solid rgba(70,74,70,.16);border-radius:50%}
+  .color-order{width:19px;height:19px;border-radius:50%;display:grid;place-items:center;background:#eceee9;color:#666b65;font-weight:700}
+
+  .controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .btn{
+    border:0;border-radius:14px;padding:11px 15px;cursor:pointer;
+    background:#fff;color:var(--text);box-shadow:0 6px 16px rgba(65,70,65,.09);
+    transition:.18s transform,.18s opacity,.18s background;
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn:disabled{opacity:.42;cursor:not-allowed;transform:none}
+  .side{display:flex;flex-direction:column;gap:18px}
+  .panel{padding:16px}
+  .panel h2{margin:0 0 12px;font-size:16px}
+  .layers{display:grid;gap:10px}
+  .layer{
+    display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:center;
+    padding:11px;border-radius:16px;background:rgba(255,255,255,.62);
+    border:1px solid rgba(210,213,207,.78);
+  }
+  .num{
+    width:34px;height:34px;border-radius:12px;display:grid;place-items:center;
+    font-weight:700;color:white;
+  }
+  .num.one,.num.two,.num.three{background:#aaaead}
+  .layer-main{min-width:0}
+  .shape-name{font-weight:700}
+  .detail{font-size:12px;color:var(--muted);margin-top:3px}
+  .score{font-weight:800;font-size:18px}
+  .relation-summary{
+    display:grid;gap:8px;padding:12px;border-radius:16px;
+    background:rgba(255,255,255,.56);border:1px solid rgba(210,213,207,.78);
+    font-size:12px;color:var(--muted);line-height:1.55;
+  }
+  .relation-main{font-weight:800;color:#626762;font-size:14px}
+  .relation-tags{display:flex;flex-wrap:wrap;gap:6px}
+  .relation-tag{
+    padding:5px 8px;border-radius:999px;background:rgba(239,240,236,.88);
+    border:1px solid rgba(204,207,201,.62);color:#6c716b;
+  }
+  .result{
+    min-height:260px;position:relative;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    background:
+      radial-gradient(circle at 50% 42%,rgba(255,255,253,.98),rgba(245,245,241,.92) 62%,rgba(232,233,228,.9));
+  }
+  .result-inner{position:relative;z-index:2;padding:28px}
+  .material-orb{
+    width:110px;height:110px;margin:0 auto 16px;border-radius:44% 56% 58% 42% / 42% 46% 54% 58%;
+    background:linear-gradient(145deg,rgba(255,255,253,.94),rgba(190,194,188,.78));
+    box-shadow:inset -16px -18px 28px rgba(72,78,72,.12),0 14px 28px rgba(62,68,62,.13);
+    animation:float 3.8s ease-in-out infinite,morph 7s ease-in-out infinite;
+  }
+  @keyframes float{50%{transform:translateY(-8px) rotate(3deg)}}
+  @keyframes morph{50%{border-radius:60% 40% 44% 56% / 48% 58% 42% 52%}}
+  .magic-name{font-size:22px;font-weight:800;margin-bottom:6px}
+  .magic-desc{font-size:13px;color:var(--muted);line-height:1.7}
+  .formula{
+    margin-top:12px;padding:10px 12px;border-radius:12px;
+    background:rgba(255,255,252,.66);font-size:12px;color:#72766f;
+  }
+  .hint{
+    padding:14px 16px;font-size:13px;line-height:1.65;color:var(--muted)
+  }
+  .tiny-note{
+    margin-top:10px;
+    font-size:12px;
+    color:#858981;
+  }
+  .pulse{animation:pulse .8s ease}
+  @keyframes pulse{0%{filter:brightness(1)}45%{filter:brightness(1.14)}100%{filter:brightness(1)}}
+  @media(max-width:820px){
+    .app{grid-template-columns:1fr;padding:12px}
+    .topbar{align-items:flex-start}
+    .badge{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div>
+      <h1>ALCHEMART</h1>
+      <div class="sub">筆跡から錬成の気配をすくい上げる、描画と変化のアトリエ実験</div>
+    </div>
+    <div class="badge">一筆入力で自動進行</div>
+  </header>
+
+  <section class="card draw-card">
+    <div class="stage-head">
+      <div>
+        <div class="step-title" id="stepTitle">第一紋様を描いてください</div>
+        <div class="step-help" id="stepHelp">一筆描いたら自動で次の紋様へ進みます。円・三角形・四角形・線・♡・☆などに反応します。</div>
+      </div>
+      <div class="badge" id="stepBadge">1 / 3</div>
+    </div>
+
+
+    <div class="color-settings" aria-label="紋様ごとの線の色">
+      <div class="color-settings-title">紋様の色</div>
+      <label class="color-choice"><span class="color-order">1</span><input type="color" id="color1" value="#547b8d" aria-label="第一紋様の色"><span>核</span></label>
+      <label class="color-choice"><span class="color-order">2</span><input type="color" id="color2" value="#b86f62" aria-label="第二紋様の色"><span>変化</span></label>
+      <label class="color-choice"><span class="color-order">3</span><input type="color" id="color3" value="#87965f" aria-label="第三紋様の色"><span>形態</span></label>
+    </div>
+
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="magicCanvas"></canvas>
+      <div class="center-dot"></div>
+    </div>
+
+    <div class="controls" id="controlsBar" hidden>
+      <button class="btn" id="resetBtn">すべてリセット</button>
+    </div>
+    <div class="tiny-note">描いた位置と大きさはそのまま保存されます。完成後はフィールド内に生成物が現れ、タップすると変化反応を起こします。</div>
+  </section>
+
+  <aside class="side">
+    <section class="card panel">
+      <h2>紋様解析</h2>
+      <div class="layers" id="layers"></div>
+    </section>
+
+    <section class="card panel">
+      <h2>配置・大きさ解析</h2>
+      <div class="relation-summary" id="relationSummary">
+        <div class="relation-main">まだ配置情報がありません</div>
+        <div>描く位置、大きさ、重なり方、3紋様の並び方が錬成結果に反映されます。</div>
+      </div>
+    </section>
+
+    <section class="card result" id="resultPanel">
+      <div class="result-inner">
+        <div class="material-orb" id="materialOrb"></div>
+        <div class="magic-name" id="magicName">未発動</div>
+        <div class="magic-desc" id="magicDesc">3つの紋様を書き終えると、配置・重なり・大きさを解析し、魔法陣からフィールド内へ生成物が現れます。</div>
+        <div class="formula" id="formula">核 × 変化 × 形態 × 配置</div>
+      </div>
+    </section>
+
+    <section class="card hint">
+      図形の種類だけでなく、中心からの距離、互いの重なり、大きさ比、配置方向も判定します。重ねると融合・封入、離すと分裂・散開、直線状に並べると導流型の反応になります。
+    </section>
+  </aside>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('magicCanvas');
+  const wrap = document.getElementById('canvasWrap');
+  const ctx = canvas.getContext('2d');
+  const resetBtn = document.getElementById('resetBtn');
+  const controlsBar = document.getElementById('controlsBar');
+  const stepTitle = document.getElementById('stepTitle');
+  const stepHelp = document.getElementById('stepHelp');
+  const stepBadge = document.getElementById('stepBadge');
+  const layersEl = document.getElementById('layers');
+  const resultPanel = document.getElementById('resultPanel');
+  const magicName = document.getElementById('magicName');
+  const magicDesc = document.getElementById('magicDesc');
+  const formula = document.getElementById('formula');
+  const materialOrb = document.getElementById('materialOrb');
+  const relationSummary = document.getElementById('relationSummary');
+  const colorInputs = [
+    document.getElementById('color1'),
+    document.getElementById('color2'),
+    document.getElementById('color3')
+  ];
+
+  const colors = colorInputs.map(input => input.value);
+
+  let current = [];
+  let layers = [];
+  let effects = [];
+  let drawing = false;
+  let dpr = 1;
+  let ritualAnim = null;
+  let processing = false;
+  let sealedCircle = false;
+  let fieldMaterial = null;
+  let lastMaterialPulse = null;
+  let ritualSerial = 0;
+
+
+  function normalizeHex(hex){
+    const value=String(hex || '').replace('#','');
+    if(value.length===3) return '#'+value.split('').map(c=>c+c).join('');
+    return '#'+value.padEnd(6,'0').slice(0,6);
+  }
+
+  function hexToRgb(hex){
+    const value=normalizeHex(hex).slice(1);
+    return {
+      r:parseInt(value.slice(0,2),16),
+      g:parseInt(value.slice(2,4),16),
+      b:parseInt(value.slice(4,6),16)
+    };
+  }
+
+  function rgbToHex({r,g,b}){
+    const part=v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0');
+    return `#${part(r)}${part(g)}${part(b)}`;
+  }
+
+  function mixColor(a,b,amount=.5){
+    const ca=hexToRgb(a), cb=hexToRgb(b);
+    return rgbToHex({
+      r:ca.r+(cb.r-ca.r)*amount,
+      g:ca.g+(cb.g-ca.g)*amount,
+      b:ca.b+(cb.b-ca.b)*amount
+    });
+  }
+
+  function lightenColor(color,amount=.45){return mixColor(color,'#ffffff',amount)}
+  function darkenColor(color,amount=.28){return mixColor(color,'#202420',amount)}
+  function colorWithAlpha(color,alpha){
+    const {r,g,b}=hexToRgb(color);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  function selectedGradient(){
+    return `linear-gradient(145deg,${lightenColor(colors[0],.72)},${mixColor(colors[0],colors[1],.48)} 52%,${mixColor(colors[1],colors[2],.58)})`;
+  }
+
+  function syncSelectedColors(){
+    colorInputs.forEach((input,index)=>{ colors[index]=normalizeHex(input.value); });
+    layers.forEach((layer,index)=>{ if(layer) layer.color=colors[index]; });
+    if(fieldMaterial) fieldMaterial.colors=colors.slice();
+    if(layers.length===3) materialOrb.style.background=selectedGradient();
+    renderLayers();
+    redraw();
+  }
+
+  function resize() {
+    const r = wrap.getBoundingClientRect();
+    dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    canvas.width = Math.round(r.width * dpr);
+    canvas.height = Math.round(r.height * dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    redraw();
+  }
+
+  function pointFromEvent(e) {
+    const r = canvas.getBoundingClientRect();
+    return { x:e.clientX-r.left, y:e.clientY-r.top };
+  }
+
+  function start(e) {
+    if (processing) return;
+    if (layers.length >= 3) {
+      if (fieldMaterial && !ritualAnim) interactWithMaterial(pointFromEvent(e));
+      return;
+    }
+    drawing = true;
+    current = [pointFromEvent(e)];
+    try { canvas.setPointerCapture?.(e.pointerId); } catch (_) {}
+    redraw();
+  }
+
+  function move(e) {
+    if (!drawing) return;
+    const p = pointFromEvent(e);
+    const last = current[current.length-1];
+    if (!last || Math.hypot(p.x-last.x,p.y-last.y) > 2) current.push(p);
+    redraw();
+  }
+
+  function end(e) {
+    if (!drawing) return;
+    drawing = false;
+    try { if (canvas.hasPointerCapture?.(e.pointerId)) canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+
+    if (current.length < 10 || pathLength(current) < 40) {
+      current = [];
+      redraw();
+      return;
+    }
+    autoCommitCurrent();
+  }
+
+  canvas.addEventListener('pointerdown', start);
+  canvas.addEventListener('pointermove', move);
+  canvas.addEventListener('pointerup', end);
+  canvas.addEventListener('pointercancel', end);
+
+  function drawPath(points, color, alpha=1, width=4) {
+    if (points.length < 2) return;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(points[0].x,points[0].y);
+    for (let i=1;i<points.length;i++) ctx.lineTo(points[i].x,points[i].y);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawRingSegments(cx,cy,radius,rotation,color,alpha,width,segments=12,gap=.13){
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(rotation);
+    ctx.strokeStyle=color;
+    ctx.globalAlpha=alpha;
+    ctx.lineWidth=width;
+    ctx.lineCap='round';
+    for(let i=0;i<segments;i++){
+      const a=(Math.PI*2/segments)*i + gap;
+      const b=(Math.PI*2/segments)*(i+1) - gap;
+      ctx.beginPath();
+      ctx.arc(0,0,radius,a,b);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawMarkerShape(type,size,color,fillAlpha=0,strokeAlpha=1){
+    ctx.save();
+    if(fillAlpha>0){
+      ctx.globalAlpha=fillAlpha;
+      ctx.fillStyle=color;
+      ctx.beginPath();
+      if(type==='circle'){
+        ctx.arc(0,0,size,0,Math.PI*2);
+      }else if(type==='triangle'){
+        for(let i=0;i<3;i++){
+          const a=-Math.PI/2 + i*Math.PI*2/3;
+          const x=Math.cos(a)*size, y=Math.sin(a)*size;
+          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.closePath();
+      }else{
+        ctx.rect(-size,-size,size*2,size*2);
+      }
+      ctx.fill();
+    }
+    ctx.globalAlpha=strokeAlpha;
+    ctx.strokeStyle=color;
+    ctx.lineWidth=Math.max(.8,size*.10);
+    ctx.beginPath();
+    if(type==='circle'){
+      ctx.arc(0,0,size,0,Math.PI*2);
+    }else if(type==='triangle'){
+      for(let i=0;i<3;i++){
+        const a=-Math.PI/2 + i*Math.PI*2/3;
+        const x=Math.cos(a)*size, y=Math.sin(a)*size;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.closePath();
+    }else{
+      ctx.rect(-size,-size,size*2,size*2);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawShapeRing(cx,cy,radius,rotation,alpha,color,count=12,startIndex=0,sizeFactor=.075){
+    const types=['circle','triangle','square'];
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(rotation);
+    for(let i=0;i<count;i++){
+      const a=(Math.PI*2/count)*i;
+      ctx.save();
+      ctx.rotate(a);
+      ctx.translate(0,-radius);
+      ctx.rotate(-a);
+      drawMarkerShape(types[(i+startIndex)%types.length], Math.max(4,radius*sizeFactor), color, 0, alpha*.72);
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  function drawMagicCircle(w,h,now){
+    if(!layers.length && !current.length && !ritualAnim && !sealedCircle) return;
+    const cx=w/2, cy=h/2;
+    const size=Math.min(w,h);
+    const progress=Math.max(layers.length+(current.length?0.35:0),.2)/3;
+    const ritualPower=ritualAnim ? (.24 + ritualAnim.glow*.44) : 0;
+    const sealedPower=sealedCircle ? 1 : 0;
+    const baseAlpha=.072 + progress*.062 + ritualPower*.07 + sealedPower*.05;
+    const pulse=ritualAnim ? (0.95 + Math.sin(now*.012)*.05) : 1;
+    const ringAngles=ritualAnim?.ringAngles || [0,0,0,0];
+    const ringMain='#bdb9c4';
+    const ringSub='#d2ced8';
+
+    ctx.save();
+    ctx.globalCompositeOperation='source-over';
+    ctx.shadowBlur=sealedCircle ? 2 : ritualAnim ? 4 : 0;
+    ctx.shadowColor='rgba(190,186,197,.22)';
+
+    drawRingSegments(cx,cy,size*.455,ringAngles[0]||0,ringMain,baseAlpha*pulse,.95,18,.055);
+    drawRingSegments(cx,cy,size*.392,-(ringAngles[1]||0)*.55,ringSub,baseAlpha*.88*pulse,.88,12,.10);
+    drawRingSegments(cx,cy,size*.300,ringAngles[2]||0,ringMain,baseAlpha*.80*pulse,.82,8,.13);
+
+    ctx.globalAlpha=baseAlpha*.62*pulse;
+    ctx.strokeStyle=ringSub;
+    ctx.lineWidth=.85;
+    ctx.setLineDash([3,7]);
+    ctx.beginPath(); ctx.arc(cx,cy,size*.425,0,Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx,cy,size*.335,0,Math.PI*2); ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate((ringAngles[1]||0)*.16);
+    ctx.globalAlpha=baseAlpha*.72*pulse;
+    ctx.strokeStyle=ringMain;
+    ctx.lineWidth=.95;
+
+    ctx.beginPath();
+    ctx.arc(0,0,size*.204,0,Math.PI*2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    for(let i=0;i<3;i++){
+      const a=-Math.PI/2 + i*Math.PI*2/3;
+      const x=Math.cos(a)*size*.268, y=Math.sin(a)*size*.268;
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+
+    ctx.beginPath();
+    for(let i=0;i<3;i++){
+      const a=Math.PI/2 + i*Math.PI*2/3;
+      const x=Math.cos(a)*size*.268, y=Math.sin(a)*size*.268;
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(ringAngles[0]||0);
+    ctx.globalAlpha=baseAlpha*.46*pulse;
+    ctx.strokeStyle=ringMain;
+    ctx.lineWidth=.78;
+    for(let i=0;i<24;i++){
+      const a=i*Math.PI*2/24;
+      const inner=size*(i%2===0?.408:.420);
+      const outer=size*.444;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a)*inner,Math.sin(a)*inner);
+      ctx.lineTo(Math.cos(a)*outer,Math.sin(a)*outer);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.globalAlpha=baseAlpha*.34*pulse;
+    ctx.strokeStyle=ringSub;
+    ctx.lineWidth=.72;
+    for(let i=0;i<12;i++){
+      const a=i*Math.PI*2/12;
+      const rr=size*.366;
+      const x=Math.cos(a)*rr, y=Math.sin(a)*rr;
+      ctx.beginPath();
+      ctx.arc(x,y,1.6,0,Math.PI*2);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    ctx.globalAlpha=(baseAlpha+.012)*pulse;
+    ctx.fillStyle='rgba(255,255,255,.62)';
+    ctx.beginPath(); ctx.arc(cx,cy,2.0+ritualPower,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  function redraw() {
+    const r = wrap.getBoundingClientRect();
+    ctx.clearRect(0,0,r.width,r.height);
+    const now = performance.now();
+
+    drawMagicCircle(r.width,r.height,now);
+    drawFieldMaterial(r.width,r.height,now);
+
+    if (ritualAnim) {
+      const cx = r.width/2;
+      const cy = r.height/2;
+      layers.forEach((l,i)=>{
+        ctx.save();
+        ctx.translate(cx,cy);
+        ctx.rotate((ritualAnim.angles[i] || 0)*Math.PI/180);
+        ctx.translate(-cx,-cy);
+
+        if (ritualAnim.glow > 0) {
+          ctx.save();
+          ctx.shadowBlur = 12 * ritualAnim.glow;
+          ctx.shadowColor = colorWithAlpha(colors[i],.32);
+          drawPath(
+            l.points,
+            colors[i],
+            .34 + ritualAnim.glow*.16,
+            3.1 + ritualAnim.glow*.8
+          );
+          ctx.restore();
+        } else {
+          drawPath(l.points,colors[i],.44,3.2);
+        }
+        ctx.restore();
+      });
+    } else {
+      layers.forEach((l,i)=>{
+        ctx.save();
+        if(sealedCircle){
+          ctx.shadowBlur=4;
+          ctx.shadowColor=colorWithAlpha(colors[i],.32);
+          drawPath(l.points,colors[i],.48,3.3);
+        }else{
+          drawPath(l.points,colors[i],.38,3.0);
+        }
+        ctx.restore();
+      });
+    }
+
+    if (current.length) {
+      ctx.save();
+      ctx.shadowBlur=3;
+      ctx.shadowColor=colorWithAlpha(colors[layers.length],.30);
+      drawPath(current,colors[layers.length],.96,3.6);
+      ctx.restore();
+    }
+
+    effects = effects.filter(e => now - e.start < e.duration);
+    for (const e of effects) drawEffect(e, now, r.width, r.height);
+  }
+
+  function drawEffect(e, now, w, h){
+    const t = Math.max(0, Math.min(1, (now - e.start) / e.duration));
+    if (e.kind === 'trace-path') {
+      const pts = e.points;
+      const head = Math.min(pts.length - 1, Math.floor(t * (pts.length - 1)));
+      const trailLength = Math.max(4, Math.floor(pts.length * .22));
+      const tail = Math.max(0, head - trailLength);
+      const segment = pts.slice(tail, head + 1);
+
+      ctx.save();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = e.color;
+      drawPath(segment, e.color, .42, 3.6);
+
+      const p = pts[head];
+      if (p) {
+        const radius = 2.6 + Math.sin(t * Math.PI) * 1.2;
+        ctx.fillStyle = 'rgba(255,255,255,.58)';
+        ctx.shadowBlur = 5;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    } else if (e.kind === 'seal-burst') {
+      const ease=1-Math.pow(1-t,3);
+      ctx.save();
+      ctx.globalCompositeOperation='source-over';
+      ctx.globalAlpha=(1-t)*.26;
+      ctx.strokeStyle=e.color;
+      ctx.lineWidth=1.25*(1-t)+.55;
+      ctx.shadowBlur=3;
+      ctx.shadowColor=e.color;
+      ctx.beginPath();
+      ctx.arc(w/2,h/2,18+ease*Math.min(w,h)*(.18+e.index*.055),0,Math.PI*2);
+      ctx.stroke();
+      for(const p of e.particles){
+        const px=w/2+Math.cos(p.a)*(22+ease*p.dist);
+        const py=h/2+Math.sin(p.a)*(22+ease*p.dist);
+        ctx.globalAlpha=(1-t)*p.alpha*.26;
+        ctx.fillStyle=e.color;
+        ctx.beginPath();
+        ctx.arc(px,py,p.size*(1-t)*.6+.3,0,Math.PI*2);
+        ctx.fill();
+      }
+      ctx.restore();
+    } else if (e.kind === 'final-glow') {
+      const flash=Math.max(0,Math.sin(t*Math.PI));
+      const ease=1-Math.pow(1-t,4);
+      ctx.save();
+      ctx.globalCompositeOperation='source-over';
+      ctx.translate(w/2,h/2);
+      ctx.globalAlpha=flash*.22;
+      ctx.fillStyle='rgba(255,255,255,.08)';
+      ctx.beginPath();
+      ctx.arc(0,0,20+ease*Math.min(w,h)*.16,0,Math.PI*2);
+      ctx.fill();
+      ctx.strokeStyle=(e.colors&&e.colors[0])||'rgba(182,178,191,.60)';
+      ctx.lineWidth=1.1*(1-t)+.45;
+      ctx.shadowBlur=4;
+      ctx.shadowColor=e.colors?colorWithAlpha(e.colors[0],.24):'rgba(176,180,174,.24)';
+      for(let ring=0;ring<3;ring++){
+        if(e.colors) ctx.strokeStyle=e.colors[ring%e.colors.length];
+        ctx.globalAlpha=flash*(.25-ring*.045);
+        ctx.beginPath();
+        ctx.arc(0,0,16+ease*Math.min(w,h)*(.14+ring*.065),0,Math.PI*2);
+        ctx.stroke();
+      }
+      ctx.globalAlpha=flash*.22;
+      for(let i=0;i<8;i++){
+        const a=i*Math.PI*2/8 + t*.32;
+        const inner=18+ease*Math.min(w,h)*.05;
+        const outer=28+ease*Math.min(w,h)*.20;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a)*inner,Math.sin(a)*inner);
+        ctx.lineTo(Math.cos(a)*outer,Math.sin(a)*outer);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
+  function normalize(points) {
+    const xs=points.map(p=>p.x), ys=points.map(p=>p.y);
+    const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+    const w=Math.max(1,maxX-minX), h=Math.max(1,maxY-minY);
+    return points.map(p=>({x:(p.x-minX)/w,y:(p.y-minY)/h}));
+  }
+
+  function pathLength(points){
+    let n=0; for(let i=1;i<points.length;i++) n += Math.hypot(points[i].x-points[i-1].x,points[i].y-points[i-1].y);
+    return n;
+  }
+
+  function resample(points, count=80){
+    if(points.length<2) return points;
+    const total=pathLength(points), step=total/(count-1);
+    const out=[points[0]];
+    let acc=0, i=1, prev={...points[0]};
+    while(i<points.length && out.length<count){
+      const cur=points[i];
+      const d=Math.hypot(cur.x-prev.x,cur.y-prev.y);
+      if(acc+d>=step){
+        const t=(step-acc)/Math.max(d,.0001);
+        prev={x:prev.x+(cur.x-prev.x)*t,y:prev.y+(cur.y-prev.y)*t};
+        out.push({...prev});
+        acc=0;
+      }else{
+        acc+=d; prev={...cur}; i++;
+      }
+    }
+    while(out.length<count) out.push({...points[points.length-1]});
+    return out;
+  }
+
+  function clamp(v){return Math.max(0,Math.min(100,v))}
+
+  function straightnessScore(points){
+    let total=0;
+    for(let i=1;i<points.length-1;i++){
+      const a=points[i-1],b=points[i],c=points[i+1];
+      const v1={x:a.x-b.x,y:a.y-b.y},v2={x:c.x-b.x,y:c.y-b.y};
+      const dot=v1.x*v2.x+v1.y*v2.y;
+      const den=Math.hypot(v1.x,v1.y)*Math.hypot(v2.x,v2.y)+.001;
+      total+=Math.abs(dot/den);
+    }
+    return total/Math.max(1,points.length-2);
+  }
+
+  function linearity(points){
+    const c=points.reduce((a,p)=>({x:a.x+p.x/points.length,y:a.y+p.y/points.length}),{x:0,y:0});
+    let xx=0,yy=0,xy=0;
+    points.forEach(p=>{const x=p.x-c.x,y=p.y-c.y;xx+=x*x;yy+=y*y;xy+=x*y;});
+    const tr=xx+yy, det=xx*yy-xy*xy;
+    const disc=Math.sqrt(Math.max(0,tr*tr-4*det));
+    const l1=(tr+disc)/2,l2=(tr-disc)/2;
+    return 1-l2/(l1+.001);
+  }
+
+  function pointLineDistance(p,a,b){
+    const dx=b.x-a.x,dy=b.y-a.y;
+    if(dx===0&&dy===0)return Math.hypot(p.x-a.x,p.y-a.y);
+    const t=((p.x-a.x)*dx+(p.y-a.y)*dy)/(dx*dx+dy*dy);
+    const q={x:a.x+t*dx,y:a.y+t*dy};
+    return Math.hypot(p.x-q.x,p.y-q.y);
+  }
+
+  function rdp(points,eps){
+    if(points.length<3)return points;
+    const first=points[0],last=points[points.length-1];
+    let idx=-1,max=0;
+    for(let i=1;i<points.length-1;i++){
+      const d=pointLineDistance(points[i],first,last);
+      if(d>max){max=d;idx=i;}
+    }
+    if(max>eps){
+      const a=rdp(points.slice(0,idx+1),eps);
+      const b=rdp(points.slice(idx),eps);
+      return a.slice(0,-1).concat(b);
+    }
+    return [first,last];
+  }
+
+  function principalAngle(points){
+    const c=points.reduce((a,p)=>({x:a.x+p.x/points.length,y:a.y+p.y/points.length}),{x:0,y:0});
+    let xx=0,yy=0,xy=0;
+    points.forEach(p=>{const x=p.x-c.x,y=p.y-c.y;xx+=x*x;yy+=y*y;xy+=x*y;});
+    return (0.5*Math.atan2(2*xy,xx-yy)*180/Math.PI+360)%360;
+  }
+
+  function directionName(a,shape){
+    if(shape==='円' || shape==='♡') return '方向なし';
+    const dirs=['上','右上','右','右下','下','左下','左','左上'];
+    return dirs[Math.round(a/45)%8];
+  }
+
+  function polygonArea(points){
+    let a=0;
+    for(let i=0;i<points.length;i++){
+      const p=points[i], q=points[(i+1)%points.length];
+      a += p.x*q.y - q.x*p.y;
+    }
+    return Math.abs(a)/2;
+  }
+
+  function centroid(points){
+    return points.reduce((a,p)=>({x:a.x+p.x/points.length,y:a.y+p.y/points.length}),{x:0,y:0});
+  }
+
+  function crossingsHorizontal(points, y=0.5){
+    let count = 0;
+    for(let i=1;i<points.length;i++){
+      const a=points[i-1], b=points[i];
+      if ((a.y <= y && b.y > y) || (a.y > y && b.y <= y)) count++;
+    }
+    return count;
+  }
+
+  function heartScore(points, closure){
+    const c = centroid(points);
+    let topLobes = 0;
+    let bottomPoint = 0;
+    let topCenterDip = 0;
+    let leftCount = 0;
+    let rightCount = 0;
+    points.forEach(p=>{
+      if (p.y < 0.4 && Math.abs(p.x-0.5) > 0.12) topLobes++;
+      if (p.y > 0.72 && Math.abs(p.x-0.5) < 0.18) bottomPoint++;
+      if (p.y < 0.32 && Math.abs(p.x-0.5) < 0.12) topCenterDip++;
+      if (p.x < 0.5) leftCount++; else rightCount++;
+    });
+    const symmetry = 1 - Math.abs(leftCount-rightCount)/points.length;
+    const hasTop = topLobes / points.length;
+    const hasBottom = bottomPoint / points.length;
+    const hasDip = topCenterDip / points.length;
+    let s = 0;
+    s += (1 - Math.min(1, closure*1.2)) * 30;
+    s += clamp(hasTop * 160) * 0.22;
+    s += clamp(hasBottom * 220) * 0.20;
+    s += clamp((1 - hasDip) * 100) * 0.08;
+    s += symmetry * 28;
+    return clamp(s);
+  }
+
+  function starScore(points, closure, simp){
+    const c = centroid(points);
+    const radii = points.map(p=>Math.hypot(p.x-c.x,p.y-c.y));
+    const avg = radii.reduce((a,b)=>a+b,0)/radii.length;
+    const maxima = [];
+    for(let i=1;i<radii.length-1;i++){
+      if (radii[i] > radii[i-1] && radii[i] > radii[i+1] && radii[i] > avg*1.06) maxima.push(i);
+    }
+    const peakCount = maxima.length;
+    const simpCount = Math.max(0, simp.length - 1);
+    const alt = alternatingExtremes(radii);
+    let s = 0;
+    s += (1 - Math.min(1, closure*1.25)) * 26;
+    s += clamp(100 - Math.abs(peakCount - 5) * 18) * 0.34;
+    s += clamp(100 - Math.abs(simpCount - 10) * 9) * 0.18;
+    s += alt * 22;
+    return clamp(s);
+  }
+
+  function alternatingExtremes(radii){
+    const avg = radii.reduce((a,b)=>a+b,0)/radii.length;
+    let switches = 0;
+    let prev = radii[0] > avg;
+    for(let i=1;i<radii.length;i++){
+      const cur = radii[i] > avg;
+      if (cur !== prev) switches++;
+      prev = cur;
+    }
+    return Math.min(1, switches / 14);
+  }
+
+  function geometryFromPoints(points){
+    const r=wrap.getBoundingClientRect();
+    const xs=points.map(p=>p.x), ys=points.map(p=>p.y);
+    const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+    const width=Math.max(1,maxX-minX), height=Math.max(1,maxY-minY);
+    const center={x:(minX+maxX)/2,y:(minY+maxY)/2};
+    const nx=center.x/Math.max(1,r.width), ny=center.y/Math.max(1,r.height);
+    const size=Math.sqrt((width*height)/Math.max(1,r.width*r.height));
+    const radius=Math.hypot(nx-.5,ny-.5)/Math.SQRT1_2;
+    const horizontal=nx<.34?'左':nx>.66?'右':'中央';
+    const vertical=ny<.34?'上':ny>.66?'下':'中央';
+    const zone=horizontal==='中央'&&vertical==='中央'?'中央':`${vertical}${horizontal==='中央'?'':horizontal}`;
+    const sizeLabel=size<.22?'小型':size<.39?'中型':'大型';
+    return {minX,maxX,minY,maxY,width,height,center,nx,ny,size,radius,zone,sizeLabel,area:width*height/Math.max(1,r.width*r.height)};
+  }
+
+  function bboxOverlap(a,b){
+    const ix=Math.max(0,Math.min(a.maxX,b.maxX)-Math.max(a.minX,b.minX));
+    const iy=Math.max(0,Math.min(a.maxY,b.maxY)-Math.max(a.minY,b.minY));
+    const inter=ix*iy;
+    const smaller=Math.max(1,Math.min(a.width*a.height,b.width*b.height));
+    return Math.max(0,Math.min(1,inter/smaller));
+  }
+
+  function pairDistance(a,b){
+    return Math.hypot(a.nx-b.nx,a.ny-b.ny)/Math.SQRT2;
+  }
+
+  function triangleAlignment(a,b,c){
+    const area=Math.abs((b.nx-a.nx)*(c.ny-a.ny)-(b.ny-a.ny)*(c.nx-a.nx))/2;
+    const span=Math.max(pairDistance(a,b),pairDistance(b,c),pairDistance(a,c),.01);
+    return Math.max(0,Math.min(1,1-area/(span*span*.42)));
+  }
+
+  function spatialFromLayers(sourceLayers=layers){
+    const geoms=sourceLayers.map(l=>l.analysis.geometry);
+    if(!geoms.length) return null;
+    const avg={x:geoms.reduce((n,g)=>n+g.nx,0)/geoms.length,y:geoms.reduce((n,g)=>n+g.ny,0)/geoms.length};
+    if(geoms.length===1){
+      return {arrangement:'単独核',arrangementKey:'single',avg,overlap:0,separation:0,alignment:0,coherence:70,scale:geoms[0].size,dominant:0,sizeOrder:[0],vectorAngle:0};
+    }
+    const pairs=[];
+    for(let i=0;i<geoms.length;i++) for(let j=i+1;j<geoms.length;j++) pairs.push({i,j,overlap:bboxOverlap(geoms[i],geoms[j]),distance:pairDistance(geoms[i],geoms[j])});
+    const overlap=pairs.reduce((n,p)=>n+p.overlap,0)/pairs.length;
+    const separation=pairs.reduce((n,p)=>n+p.distance,0)/pairs.length;
+    const alignment=geoms.length===3?triangleAlignment(...geoms):0;
+    const sizes=geoms.map(g=>g.size);
+    const sizeOrder=sizes.map((v,i)=>({v,i})).sort((a,b)=>b.v-a.v).map(x=>x.i);
+    const maxSize=Math.max(...sizes), minSize=Math.max(.01,Math.min(...sizes));
+    const nested=overlap>.62 && maxSize/minSize>1.45;
+    let arrangement='連結型', arrangementKey='chain';
+    if(nested){arrangement='封入型';arrangementKey='containment';}
+    else if(overlap>.52){arrangement='融合型';arrangementKey='fusion';}
+    else if(separation>.42){arrangement='散開型';arrangementKey='separation';}
+    else if(geoms.length===3 && alignment>.78){arrangement='導流型';arrangementKey='flow';}
+    else if(overlap<.12 && separation<.31){arrangement='三点共鳴型';arrangementKey='triad';}
+    const v0=geoms[0], v1=geoms[Math.min(1,geoms.length-1)];
+    const vectorAngle=Math.atan2(v1.ny-v0.ny,v1.nx-v0.nx);
+    const balance=1-Math.min(1,(maxSize-minSize)/Math.max(.01,maxSize));
+    const coherence=Math.round(Math.max(20,Math.min(100,
+      arrangementKey==='fusion'?68+overlap*30:
+      arrangementKey==='containment'?72+overlap*24:
+      arrangementKey==='flow'?62+alignment*34:
+      arrangementKey==='separation'?64+(1-overlap)*24:
+      56+balance*24+(1-separation)*12
+    )));
+    return {arrangement,arrangementKey,avg,overlap,separation,alignment,coherence,scale:sizes.reduce((a,b)=>a+b,0)/sizes.length,dominant:sizeOrder[0],sizeOrder,vectorAngle,geoms};
+  }
+
+  function dominantLabel(index){
+    return ['核の性質','変化作用','最終形態'][index] || '均衡';
+  }
+
+  function renderRelationSummary(){
+    const spatial=spatialFromLayers();
+    if(!spatial){
+      relationSummary.innerHTML='<div class="relation-main">まだ配置情報がありません</div><div>描く位置、大きさ、重なり方、3紋様の並び方が錬成結果に反映されます。</div>';
+      return;
+    }
+    if(layers.length===1){
+      const g=layers[0].analysis.geometry;
+      relationSummary.innerHTML=`<div class="relation-main">核は${g.zone}の${g.sizeLabel}</div><div>次の紋様を重ねるか、離して描くかで融合と散開が分岐します。</div><div class="relation-tags"><span class="relation-tag">中心距離 ${Math.round(g.radius*100)}%</span><span class="relation-tag">占有規模 ${Math.round(g.size*100)}%</span></div>`;
+      return;
+    }
+    const tags=[`重なり ${Math.round(spatial.overlap*100)}%`,`間隔 ${Math.round(spatial.separation*100)}%`,`配置整合 ${spatial.coherence}%`,`${dominantLabel(spatial.dominant)}が優勢`];
+    if(layers.length===3) tags.push(`直線性 ${Math.round(spatial.alignment*100)}%`);
+    const explanation=spatial.arrangementKey==='fusion'?'紋様が重なり、素材と作用がひとつの塊へ融合します。':spatial.arrangementKey==='containment'?'大きい紋様が小さい紋様を包み、核を内部に封じ込めます。':spatial.arrangementKey==='separation'?'紋様同士が離れ、生成物が複数へ分かれて散開します。':spatial.arrangementKey==='flow'?'3紋様が流路を作り、第一紋様から第二・第三紋様へ力が流れます。':spatial.arrangementKey==='triad'?'3つの離れた核が互いに共鳴し、三角形の場を形成します。':'位置関係が鎖状に接続され、段階的に変化します。';
+    relationSummary.innerHTML=`<div class="relation-main">${spatial.arrangement}</div><div>${explanation}</div><div class="relation-tags">${tags.map(t=>`<span class="relation-tag">${t}</span>`).join('')}</div>`;
+  }
+
+  function materialPalette(){
+    return colors.map(color=>({
+      light:lightenColor(color,.58),
+      mid:color,
+      dark:darkenColor(color,.30)
+    }));
+  }
+
+  function createFieldMaterial(m,revealDelay=0){
+    const r=wrap.getBoundingClientRect();
+    const spatial=m.spatial;
+    const origin={x:spatial.avg.x*r.width,y:spatial.avg.y*r.height};
+    const count=Math.max(7,Math.min(28,Math.round(7+spatial.scale*30+(spatial.arrangementKey==='separation'?7:0))));
+    const particles=Array.from({length:count},(_,i)=>({seed:Math.random(),phase:Math.random()*Math.PI*2,angle:(Math.PI*2*i)/count+(Math.random()-.5)*.38,radius:18+Math.random()*(38+spatial.separation*75),size:4+Math.random()*8+spatial.scale*10,speed:.45+Math.random()*.75,drift:(Math.random()-.5)*24}));
+    fieldMaterial={created:performance.now()+revealDelay,origin,particles,spatial,matterShape:layers[0].analysis.shape,changeShape:layers[1].analysis.shape,formShape:layers[2].analysis.shape,palette:materialPalette(),colors:colors.slice(),power:m.avg/100,interaction:0,pulseOrigin:{...origin}};
+  }
+
+  function drawStarShape(x,y,r,rotation,color){
+    ctx.save();ctx.translate(x,y);ctx.rotate(rotation);ctx.fillStyle=color;ctx.beginPath();
+    for(let i=0;i<10;i++){
+      const a=-Math.PI/2+i*Math.PI/5, rr=i%2===0?r:r*.42;
+      const px=Math.cos(a)*rr,py=Math.sin(a)*rr;
+      if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+    }
+    ctx.closePath();ctx.fill();ctx.restore();
+  }
+
+  function drawMaterialParticle(x,y,size,rotation,alpha,material,index,time){
+    const base=material.colors[index%material.colors.length];
+    const next=material.colors[(index+1)%material.colors.length];
+    const light=lightenColor(base,.60);
+    const mid=mixColor(base,next,.18);
+    const dark=darkenColor(base,.30);
+    ctx.save();ctx.translate(x,y);ctx.rotate(rotation);ctx.globalAlpha=alpha;
+    ctx.shadowBlur=2+material.power*3;ctx.shadowColor=mid;
+    const gradient=ctx.createRadialGradient(-size*.25,-size*.3,1,0,0,size);
+    gradient.addColorStop(0,light);gradient.addColorStop(.55,mid);gradient.addColorStop(1,dark);
+    ctx.fillStyle=gradient;ctx.strokeStyle=dark;ctx.lineWidth=1;
+    const form=material.formShape;
+    if(form==='円'){
+      ctx.beginPath();ctx.ellipse(0,0,size*(.88+Math.sin(time*2+index)*.08),size,0,0,Math.PI*2);ctx.fill();
+    }else if(form==='三角形'){
+      ctx.beginPath();ctx.moveTo(0,-size);ctx.lineTo(size*.82,size*.75);ctx.lineTo(-size*.82,size*.75);ctx.closePath();ctx.fill();ctx.stroke();
+    }else if(form==='四角形'){
+      ctx.beginPath();
+      if(ctx.roundRect) ctx.roundRect(-size*.72,-size*.72,size*1.44,size*1.44,size*.2);
+      else ctx.rect(-size*.72,-size*.72,size*1.44,size*1.44);
+      ctx.fill();ctx.stroke();
+    }else if(form==='線'){
+      ctx.lineCap='round';ctx.strokeStyle=mid;ctx.lineWidth=Math.max(2,size*.25);ctx.beginPath();ctx.moveTo(-size*1.25,0);ctx.quadraticCurveTo(0,Math.sin(time*3+index)*size*.6,size*1.25,0);ctx.stroke();
+    }else if(form==='♡'){
+      ctx.beginPath();ctx.moveTo(0,size*.8);ctx.bezierCurveTo(-size*1.2,0,-size*.8,-size*.9,0,-size*.28);ctx.bezierCurveTo(size*.8,-size*.9,size*1.2,0,0,size*.8);ctx.fill();
+    }else{
+      ctx.restore();drawStarShape(x,y,size,rotation,mid);return;
+    }
+    ctx.restore();
+  }
+
+  function drawFieldMaterial(w,h,now){
+    if(!fieldMaterial) return;
+    const m=fieldMaterial;
+    const age=(now-m.created)/1000;
+    const appear=Math.max(0,Math.min(1,age/1.05));
+    const reaction=Math.max(0,m.interaction-(now-(lastMaterialPulse||0))/900);
+    m.interaction=reaction;
+    const dir=m.spatial.vectorAngle;
+    ctx.save();ctx.globalCompositeOperation='source-over';
+    const glow=ctx.createRadialGradient(m.origin.x,m.origin.y,2,m.origin.x,m.origin.y,60+m.spatial.scale*80);
+    glow.addColorStop(0,colorWithAlpha(lightenColor(m.colors[0],.65),.07*appear));glow.addColorStop(.55,colorWithAlpha(mixColor(m.colors[1],m.colors[2],.5),.055*appear));glow.addColorStop(1,colorWithAlpha(m.colors[2],0));
+    ctx.fillStyle=glow;ctx.beginPath();ctx.arc(m.origin.x,m.origin.y,62+m.spatial.scale*82,0,Math.PI*2);ctx.fill();
+    ctx.globalCompositeOperation='source-over';
+    m.particles.forEach((p,i)=>{
+      let x=m.origin.x,y=m.origin.y;
+      const t=age*p.speed+p.phase;
+      const pulse=1+Math.sin(t*2.1)*.04+reaction*.08;
+      if(m.spatial.arrangementKey==='fusion'){
+        const rr=p.radius*(.38+.62*appear)*(1-reaction*.18);x+=Math.cos(t)*rr;y+=Math.sin(t)*rr*.72;
+      }else if(m.spatial.arrangementKey==='containment'){
+        const shell=i%3===0;const rr=shell?(45+m.spatial.scale*90):p.radius*.38;x+=Math.cos(p.angle+t*.35)*rr;y+=Math.sin(p.angle+t*.35)*rr;
+      }else if(m.spatial.arrangementKey==='separation'){
+        const side=i%2===0?1:-1;const travel=(25+p.radius)*appear+age*4;x+=Math.cos(dir)*travel*side+Math.cos(t)*12;y+=Math.sin(dir)*travel*side+Math.sin(t)*12;
+      }else if(m.spatial.arrangementKey==='flow'){
+        const progress=((p.seed+age*.10*p.speed)%1)-.5;const length=120+m.spatial.separation*180;x+=Math.cos(dir)*progress*length+Math.cos(dir+Math.PI/2)*p.drift;y+=Math.sin(dir)*progress*length+Math.sin(dir+Math.PI/2)*p.drift;
+      }else if(m.spatial.arrangementKey==='triad'){
+        const vertex=i%3;const a=vertex*Math.PI*2/3-Math.PI/2;x+=Math.cos(a)*(48+m.spatial.separation*90)+Math.cos(t)*10;y+=Math.sin(a)*(48+m.spatial.separation*90)+Math.sin(t)*10;
+      }else{
+        const progress=(i/Math.max(1,m.particles.length-1)-.5);x+=Math.cos(dir)*progress*(100+m.spatial.separation*120)+Math.cos(t)*13;y+=Math.sin(dir)*progress*(100+m.spatial.separation*120)+Math.sin(t)*13;
+      }
+      if(m.changeShape==='三角形') y-=((age*10+p.seed*18)%(35+p.radius*.25));
+      if(m.changeShape==='四角形'){x=Math.round(x/12)*12;y=Math.round(y/12)*12;}
+      if(m.changeShape==='線') x+=Math.cos(dir)*Math.sin(t*1.5)*22;
+      if(m.changeShape==='♡'){const beat=1+Math.max(0,Math.sin(age*4.2))*.16;x=m.origin.x+(x-m.origin.x)*beat;y=m.origin.y+(y-m.origin.y)*beat;}
+      drawMaterialParticle(x,y,p.size*pulse,dir+t*.12,appear*(.34+p.seed*.24),m,i,age);
+    });
+    ctx.restore();
+    if(reaction>0){
+      ctx.save();ctx.globalCompositeOperation='source-over';m.colors.forEach((color,index)=>{ctx.globalAlpha=reaction*(.16-index*.025);ctx.strokeStyle=color;ctx.lineWidth=.9;ctx.shadowBlur=3;ctx.shadowColor=color;ctx.beginPath();ctx.arc(m.pulseOrigin.x,m.pulseOrigin.y,(1-reaction)*(70+index*12)+12,0,Math.PI*2);ctx.stroke();});ctx.restore();
+    }
+  }
+
+  function interactWithMaterial(point){
+    if(!fieldMaterial) return;
+    fieldMaterial.pulseOrigin=point;
+    fieldMaterial.origin.x+=(point.x-fieldMaterial.origin.x)*.12;
+    fieldMaterial.origin.y+=(point.y-fieldMaterial.origin.y)*.12;
+    fieldMaterial.interaction=1;
+    lastMaterialPulse=performance.now();
+    fieldMaterial.particles.forEach(p=>{p.phase+=.45+Math.random()*.7;p.radius*=.92+Math.random()*.18;});
+  }
+
+  function classify(points){
+    const p=resample(points,96);
+    const n=normalize(p);
+    const start=n[0], end=n[n.length-1];
+    const closure=Math.hypot(start.x-end.x,start.y-end.y);
+    const c = centroid(n);
+    const radii=n.map(v=>Math.hypot(v.x-c.x,v.y-c.y));
+    const meanR=radii.reduce((a,b)=>a+b,0)/radii.length;
+    const stdR=Math.sqrt(radii.reduce((a,b)=>a+(b-meanR)**2,0)/radii.length);
+    const simp = rdp(n,0.05);
+    const closed = closure < .30;
+
+    const circleScore=clamp(100*(1-closure*.88)*(1-stdR/(meanR+.001)*1.72));
+    const verts = closed ? Math.max(3, simp.length-1) : simp.length;
+    let triScore = closed ? 100 - Math.abs(verts-3)*24 : 22;
+    let squareScore = closed ? 100 - Math.abs(verts-4)*20 : 18;
+    triScore = clamp(triScore - closure*34 + straightnessScore(n)*12);
+    squareScore = clamp(squareScore - closure*34 + straightnessScore(n)*10);
+
+    const lineScore=clamp(linearity(n)*100*(1-Math.min(1,closure*.2)));
+    const heart = heartScore(n, closure);
+    const star = starScore(n, closure, simp);
+
+    const scores = {
+      '円':circleScore,
+      '三角形':triScore,
+      '四角形':squareScore,
+      '線':lineScore,
+      '♡':heart,
+      '☆':star
+    };
+
+    let shape=Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];
+    let score=Math.round(scores[shape]);
+
+    let angle=principalAngle(n);
+    if(shape==='三角形'){
+      let far=n[0], fd=0;
+      n.forEach(v=>{const d=Math.hypot(v.x-c.x,v.y-c.y); if(d>fd){fd=d;far=v;}});
+      angle=(Math.atan2(far.y-c.y,far.x-c.x)*180/Math.PI+90+360)%360;
+    } else if(shape==='☆'){
+      const maxima = [];
+      for(let i=1;i<radii.length-1;i++){
+        if (radii[i] > radii[i-1] && radii[i] > radii[i+1] && radii[i] > meanR*1.06) maxima.push(i);
+      }
+      if (maxima.length) {
+        const p0 = n[maxima[0]];
+        angle = (Math.atan2(p0.y-c.y,p0.x-c.x)*180/Math.PI+90+360)%360;
+      }
+    } else if(shape==='線'){
+      angle=principalAngle(n);
+    } else if(shape==='四角形'){
+      angle=principalAngle(n);
+    } else if(shape==='円' || shape==='♡'){
+      angle = 0;
+    }
+
+    return {
+      shape,
+      score,
+      angle:Math.round(angle),
+      direction:directionName(angle,shape),
+      closure,
+      geometry:geometryFromPoints(points)
+    };
+  }
+
+  function renderLayers(){
+    const labels=['第一紋様','第二紋様','第三紋様'];
+    const cls=['one','two','three'];
+    layersEl.innerHTML='';
+    for(let i=0;i<3;i++){
+      const l=layers[i];
+      const el=document.createElement('div');
+      el.className='layer';
+      el.innerHTML=`
+        <div class="num ${cls[i]}" style="background:${colors[i]}">${i+1}</div>
+        <div class="layer-main">
+          <div class="shape-name">${l ? l.analysis.shape : labels[i]}</div>
+          <div class="detail">${l ? `${l.analysis.geometry.zone}・${l.analysis.geometry.sizeLabel}・${l.analysis.direction}` : '未入力'}</div>
+        </div>
+        <div class="score">${l ? l.analysis.score+'%' : '—'}</div>`;
+      layersEl.appendChild(el);
+    }
+  }
+
+  function updateStep(){
+    const i=layers.length;
+    const names=['第一紋様','第二紋様','第三紋様'];
+    if(i<3){
+      stepTitle.textContent=`${names[i]}を描いてください`;
+      stepHelp.textContent=i===0
+        ? '核となる物質です。描く位置が生成地点、大きさが基礎量になります。'
+        : i===1
+        ? '変化作用です。第一紋様との重なり・距離・方向が反応方式を決めます。'
+        : '最終形態です。3つの並び方と大きさ比から、融合・封入・導流・散開を判定します。';
+      stepBadge.textContent=`${i+1} / 3`;
+    }else{
+      stepTitle.textContent='魔法陣が完成しました';
+      stepHelp.textContent='配置と大きさを解析し、魔法陣から生成物を錬成しています。';
+      stepBadge.textContent='完成';
+    }
+    controlsBar.hidden = layers.length !== 3;
+    resetBtn.disabled = false;
+    renderLayers();
+    renderRelationSummary();
+  }
+
+  function addStrokeEffect(points, index){
+    const start=performance.now();
+    effects.push({
+      kind:'trace-path',
+      points: resample(points, 72),
+      color: colors[index],
+      start,
+      duration: 260
+    });
+    effects.push({
+      kind:'seal-burst',
+      color: colors[index],
+      index,
+      particles:Array.from({length:16+index*5},(_,i)=>({
+        a:(Math.PI*2*i)/(16+index*5)+(Math.random()-.5)*.20,
+        dist:55+Math.random()*95+index*18,
+        size:1+Math.random()*2.4,
+        alpha:.45+Math.random()*.5
+      })),
+      start:start+95,
+      duration:520
+    });
+  }
+
+  function addFinalGlow(){
+    effects.push({
+      kind:'final-glow',
+      colors:colors.slice(),
+      start: performance.now(),
+      duration: 820
+    });
+  }
+
+  function autoCommitCurrent(){
+    if (processing || layers.length >= 3) return;
+    processing = true;
+    const points = current.slice();
+    const index = layers.length;
+    const analysis=classify(points);
+    layers.push({points,analysis,color:colors[index]});
+    current=[];
+    addStrokeEffect(normalizeForDisplay(points), index);
+    // 状態更新より先にロックを解除し、完成後のリセットボタンを確実に有効化する
+    processing = false;
+    updateStep();
+    redraw();
+
+    if (layers.length === 3) {
+      // 結果計算と生成物の準備は直ちに行い、表示だけを儀式後半まで遅らせる
+      activate(900);
+      startRitualAnimation();
+    } else {
+      setTimeout(redraw,285);
+    }
+  }
+
+  function normalizeForDisplay(points){
+    const r = wrap.getBoundingClientRect();
+    return points.map(p=>({x:p.x, y:p.y}));
+  }
+
+  function startRitualAnimation(onComplete){
+    const start = performance.now();
+    const serial = ++ritualSerial;
+    let finished = false;
+    sealedCircle = false;
+    const configs = [
+      { delay:0,   duration:1320, turns: 1 },
+      { delay:90,  duration:1460, turns:-2 },
+      { delay:170, duration:1580, turns: 3 }
+    ];
+    const ringConfigs = [
+      {duration:1480,turns:2},
+      {duration:1600,turns:-1},
+      {duration:1410,turns:3},
+      {duration:1260,turns:-2}
+    ];
+    const totalDuration = Math.max(
+      ...configs.map(c=>c.delay+c.duration),
+      ...ringConfigs.map(c=>c.duration)
+    );
+    ritualAnim = { angles:[0,0,0], ringAngles:[0,0,0,0], glow:0 };
+
+    function easeOutQuint(t){
+      return 1 - Math.pow(1 - t, 5);
+    }
+
+    function finishRitual(){
+      if(finished || serial!==ritualSerial || layers.length!==3) return;
+      finished = true;
+      // 紋様・同心円・刻印をすべて初期角度へ戻し、ひとつの封印として固定
+      ritualAnim = { angles:[0,0,0], ringAngles:[0,0,0,0], glow:1 };
+      addFinalGlow();
+      stepHelp.textContent='魔法陣から生成物がフィールドへ出現しました。生成物をタップすると反応が強くなります。';
+      onComplete?.();
+      redraw();
+      setTimeout(()=>{
+        if(serial!==ritualSerial) return;
+        ritualAnim = null;
+        sealedCircle = true;
+        redraw();
+      }, 720);
+    }
+
+    function tick(now){
+      if(finished || serial!==ritualSerial) return;
+      const elapsed = now - start;
+
+      ritualAnim.angles = configs.map(c=>{
+        const local = Math.max(0, Math.min(1, (elapsed-c.delay)/c.duration));
+        return c.turns * 360 * easeOutQuint(local);
+      });
+      ritualAnim.ringAngles = ringConfigs.map(c=>{
+        const local=Math.max(0,Math.min(1,elapsed/c.duration));
+        return c.turns*Math.PI*2*easeOutQuint(local);
+      });
+
+      const glowStart = totalDuration - 300;
+      ritualAnim.glow = Math.max(0, Math.min(1, (elapsed-glowStart)/300));
+      redraw();
+
+      if (elapsed < totalDuration) requestAnimationFrame(tick);
+      else finishRitual();
+    }
+    requestAnimationFrame(tick);
+    // 非表示タブなどで requestAnimationFrame が抑制されても錬成結果は確定させる
+    setTimeout(finishRitual,totalDuration+120);
+  }
+
+  function magicFrom(layers){
+    const [a,b,c]=layers.map(x=>x.analysis);
+    const shapeAvg=Math.round((a.score+b.score+c.score)/3);
+    const spatial=spatialFromLayers(layers);
+    const avg=Math.round(shapeAvg*.72+spatial.coherence*.28);
+
+    const matterMap={
+      '円':'液体',
+      '三角形':'熱性物質',
+      '四角形':'鉱物',
+      '線':'繊維',
+      '♡':'有機素材',
+      '☆':'星性結晶'
+    };
+    const changeMap={
+      '円':'圧縮・循環',
+      '三角形':'加熱・励起',
+      '四角形':'固定・固化',
+      '線':'分離・伸長',
+      '♡':'融合・活性化',
+      '☆':'輝化・増幅'
+    };
+    const formMap={
+      '円':'球体',
+      '三角形':'尖晶',
+      '四角形':'板状構造',
+      '線':'糸状構造',
+      '♡':'有機片',
+      '☆':'星片構造'
+    };
+
+    const dirEffect = b.direction==='下' ? '冷却・収束方向へ反転' :
+                      b.direction==='上' ? '上昇・膨張' :
+                      b.direction==='右' ? '前方へ流動' :
+                      b.direction==='左' ? '回収・逆変換' :
+                      b.direction==='方向なし' ? '中心で安定化' :
+                      `${b.direction}方向へ偏向`;
+
+    let name=`${spatial.arrangement}・${matterMap[a.shape]}${formMap[c.shape]}の錬成`;
+    let desc=`${matterMap[a.shape]}を核に、${changeMap[b.shape]}を加え、${formMap[c.shape]}として生成します。${spatial.arrangement}の配置により、${spatial.arrangementKey==='fusion'?'素材と作用が一体化':spatial.arrangementKey==='containment'?'小さい紋様が内部核として封入':spatial.arrangementKey==='separation'?'複数の生成物へ分裂':spatial.arrangementKey==='flow'?'配置方向へ連続的に流動':spatial.arrangementKey==='triad'?'三点間で共鳴':'段階的に連結'}し、${dirEffect}します。`;
+    let bg='linear-gradient(145deg,#ffffff,#bca9e7)';
+
+    if(a.shape==='♡' && b.shape==='円'){
+      name='生命滴の培養';
+      desc='有機素材を循環・圧縮し、柔らかな生命性を帯びた生成物へ整えます。';
+      bg='linear-gradient(145deg,#fff,#efc6d7)';
+    } else if(a.shape==='☆' && b.shape==='円'){
+      name='星晶核の圧縮';
+      desc='星性結晶を内側へ圧縮し、発光する高純度の魔力核として生成します。';
+      bg='linear-gradient(145deg,#fffce7,#efd77a)';
+    } else if(a.shape==='円' && b.shape==='三角形' && b.direction==='下'){
+      name='冷却水晶の生成';
+      desc='液体を急速に冷却し、透明な結晶質へ変化させます。第三紋様の形に沿って結晶が成長します。';
+      bg='linear-gradient(145deg,#f9feff,#9fd8ee)';
+    } else if(a.shape==='円' && b.shape==='三角形' && b.direction==='上'){
+      name='蒸気核の生成';
+      desc='液体を加熱・膨張させ、周囲に留まる蒸気状物質へ変化させます。';
+      bg='linear-gradient(145deg,#ffffff,#d7d0ef)';
+    } else if(a.shape==='四角形' && b.shape==='円'){
+      name='鉱物圧縮錬成';
+      desc='鉱物を均質化して圧縮し、第三紋様に沿う高密度素材を生成します。';
+      bg='linear-gradient(145deg,#fff6ef,#cdbca7)';
+    } else if(a.shape==='線' && b.shape==='円'){
+      name='魔力繊維の紡成';
+      desc='細い物質を循環・結合させ、柔軟で切れにくい魔力繊維へ変化させます。';
+      bg='linear-gradient(145deg,#fff,#efc8dc)';
+    } else if(a.shape==='☆' && b.shape==='♡'){
+      name='星花有機結晶';
+      desc='星性結晶に生命性を重ね、やわらかく発光する有機結晶へと変化させます。';
+      bg='linear-gradient(145deg,#fff8f1,#f3d2dd)';
+    }
+
+    if(!name.startsWith(spatial.arrangement)) name=`${spatial.arrangement}・${name}`;
+    const dominance=dominantLabel(spatial.dominant);
+    desc+=` 大きさ比では${dominance}が最も強く現れます。`;
+
+    const quality = avg>=90?'極めて高純度':avg>=75?'安定した品質':avg>=55?'やや不均一':avg>=35?'不安定':'暴発寸前';
+    return {name,desc,avg,quality,bg,spatial,parts:[matterMap[a.shape],changeMap[b.shape],formMap[c.shape],spatial.arrangement]};
+  }
+
+  function activate(revealDelay=0){
+    const m=magicFrom(layers);
+    magicName.textContent=m.name;
+    magicDesc.textContent=`${m.desc} 総合精度は${m.avg}%で、生成物は${m.quality}です。`;
+    formula.textContent=m.parts.join(' × ');
+    materialOrb.style.background=selectedGradient();
+    createFieldMaterial(m,revealDelay);
+    resultPanel.classList.remove('pulse');
+    void resultPanel.offsetWidth;
+    resultPanel.classList.add('pulse');
+  }
+
+
+  colorInputs.forEach(input=>{
+    input.addEventListener('input',syncSelectedColors);
+    input.addEventListener('change',syncSelectedColors);
+  });
+
+  resetBtn.addEventListener('click',()=>{
+    if (processing) return;
+    current=[]; layers=[]; effects=[]; ritualAnim=null; ritualSerial++; sealedCircle=false; fieldMaterial=null; lastMaterialPulse=null;
+    magicName.textContent='未発動';
+    magicDesc.textContent='3つの紋様を書き終えると、配置・重なり・大きさを解析し、魔法陣からフィールド内へ生成物が現れます。';
+    formula.textContent='核 × 変化 × 形態 × 配置';
+    materialOrb.style.background='linear-gradient(145deg,rgba(255,255,253,.94),rgba(190,194,188,.78))';
+    updateStep(); resetBtn.disabled=false; redraw();
+  });
+
+  function animLoop(){
+    redraw();
+    requestAnimationFrame(animLoop);
+  }
+
+  window.addEventListener('resize',resize);
+  renderLayers();
+  updateStep();
+  requestAnimationFrame(resize);
+  requestAnimationFrame(animLoop);
+})();
+</script>
+</body>
+</html>
