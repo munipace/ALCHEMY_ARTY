@@ -56,7 +56,7 @@ button,input{font:inherit} button{color:inherit}
 .stage-info h3{margin:0;font-size:13px}.stage-info p{margin:2px 0 0;font-size:9px;color:var(--muted);line-height:1.4}
 .step-badge{padding:5px 8px;border-radius:999px;border:1px solid var(--line);font-size:11px;color:var(--muted);white-space:nowrap;background:#fff}
 .canvas-wrap{
-  position:relative;width:100%;aspect-ratio:1/1;border-radius:19px;overflow:hidden;touch-action:none;
+  position:relative;width:min(100%,760px);height:auto;aspect-ratio:1 / 1;margin:0 auto;border-radius:19px;overflow:hidden;touch-action:none;
   border:1px solid var(--line-strong);
   background:
     linear-gradient(rgba(85,90,85,.045) 1px,transparent 1px),
@@ -102,6 +102,327 @@ button,input{font:inherit} button{color:inherit}
 .toast.show{transform:translate(-50%,0);opacity:1}
 @media(max-width:980px){.layout{grid-template-columns:1fr}.sidebar{grid-template-columns:1fr 1fr}.inventory-grid{grid-template-columns:repeat(6,minmax(68px,1fr));max-height:210px}}
 @media(max-width:650px){.app{padding:8px}.topbar{align-items:flex-start}.status-pill{display:none}.sidebar{grid-template-columns:1fr}.brand h1{font-size:30px}.notebook-grid{grid-template-columns:repeat(3,1fr)}.mode-row{grid-template-columns:1fr}.placement-status{text-align:left;max-width:none}.colors{grid-template-columns:repeat(3,1fr)}.inventory-grid{grid-template-columns:repeat(4,minmax(64px,1fr));max-height:250px}.stage-info{left:7px;right:7px;top:7px}.stage-info p{display:none}.controls{bottom:8px}.btn{padding:9px 11px}}
+
+/* Illustration-tool style workbench */
+.layout{display:block;max-width:900px;margin:0 auto}
+.workshop{padding:0 12px 12px}
+.compact-head{padding-bottom:8px}
+.workbench-shell{display:flex;align-items:flex-start;justify-content:center;gap:10px;padding:0 2px}
+.tool-rail{width:62px;flex:0 0 62px;display:flex;flex-direction:column;align-items:center;gap:9px;padding:7px 6px;border:1px solid var(--line);border-radius:16px;background:rgba(247,247,243,.90);box-shadow:0 8px 20px rgba(45,49,45,.06)}
+.tool-group{display:grid;gap:6px;width:100%}
+.tool-btn{width:100%;min-height:53px;border:1px solid transparent;border-radius:12px;background:transparent;color:var(--muted);display:grid;place-items:center;gap:2px;padding:5px 3px;cursor:pointer;transition:.15s background,.15s color,.15s border-color,.15s transform}
+.tool-btn:hover{background:#fff;color:var(--text);transform:translateY(-1px)}
+.tool-btn.active{background:#fff;color:var(--text);border-color:var(--line-strong);box-shadow:0 4px 12px rgba(45,49,45,.08)}
+.tool-btn svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.tool-btn span{font-size:9px;font-weight:700}
+.tool-divider{width:34px;height:1px;background:var(--line)}
+.brush-colors{display:grid;gap:7px}
+.brush-color{position:relative;width:35px;height:35px;display:grid;place-items:center;cursor:pointer}
+.brush-color input{position:absolute;inset:0;width:35px;height:35px;border:0;padding:0;background:none;border-radius:50%;overflow:hidden;cursor:pointer}
+.brush-color input::-webkit-color-swatch-wrapper{padding:2px}
+.brush-color input::-webkit-color-swatch{border:1px solid rgba(55,58,55,.20);border-radius:50%;box-shadow:0 2px 6px rgba(45,49,45,.09)}
+.brush-color span{position:absolute;right:-2px;bottom:-2px;display:grid;place-items:center;width:15px;height:15px;border-radius:50%;background:#fff;border:1px solid var(--line-strong);font-size:8px;font-weight:800;color:var(--text);pointer-events:none}
+.canvas-column{min-width:0;width:min(100%,600px)}
+.canvas-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:8px 10px;margin-bottom:7px;border:1px solid var(--line);border-radius:14px;background:rgba(250,250,247,.82)}
+.tool-status{display:grid;gap:2px;min-width:0}.tool-status strong{font-size:12px}.tool-status span{font-size:9px;color:var(--muted);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.canvas-wrap{width:min(100%,600px);max-width:600px;height:auto!important;aspect-ratio:1/1;margin:0 auto;border-radius:16px}
+.canvas-foot{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:7px 2px 0}
+.canvas-foot .placement-status{font-size:9px;text-align:left;max-width:190px;color:var(--text)}
+.canvas-foot .microcopy{margin:0;text-align:right;max-width:360px}
+.inventory{margin-top:11px}
+.inventory-toolbar{padding:9px 11px 7px}
+.inventory-help{font-size:9px;color:var(--muted);margin-left:auto}
+.compact-action{font-size:9px;padding:7px 9px}
+.inventory-grid{display:flex;grid-template-columns:none;gap:8px;max-height:none;overflow-x:auto;overflow-y:hidden;padding:2px 10px 10px;scrollbar-width:thin;scroll-snap-type:x proximity}
+.inventory-slot{flex:0 0 66px;aspect-ratio:auto;min-height:78px;border:0;border-radius:14px;background:transparent;padding:4px 3px;display:grid;grid-template-rows:56px auto auto;align-items:start;justify-items:center;cursor:pointer;scroll-snap-align:start}
+.inventory-slot:hover{transform:none;background:rgba(255,255,255,.52)}
+.inventory-slot.armed{outline:none;background:rgba(255,255,255,.82)}
+.inventory-slot.armed .inventory-icon{border-color:#636b66;box-shadow:0 0 0 3px rgba(99,107,102,.13),0 4px 12px rgba(45,49,45,.08)}
+.inventory-icon{width:54px;height:54px;border:1px solid var(--line);border-radius:50%;background:rgba(255,255,255,.78);display:grid;place-items:center;position:relative;transition:.15s border-color,.15s box-shadow,.15s transform}
+.inventory-slot:hover .inventory-icon{transform:scale(1.035);border-color:var(--line-strong)}
+.inventory-stone{width:33px;height:28px}
+.inventory-sample{width:46px;height:46px}
+.inventory-name{width:64px;font-size:8px;margin-top:3px}
+.inventory-meta{font-size:7px;margin-top:1px}
+.inventory-empty{flex:1 0 250px;min-height:64px;display:grid;place-items:center}
+
+.placed-material.sample .object{opacity:0;inset:0}
+.placed-material.sample:hover .object{opacity:1;border:1px dashed rgba(90,95,90,.20);border-radius:50%}
+.placed-material.sample .material-index{background:rgba(255,255,255,.76)}
+@media(max-width:720px){
+  .workbench-shell{flex-direction:column;align-items:stretch}
+  .tool-rail{width:100%;flex:0 0 auto;flex-direction:row;justify-content:flex-start;padding:6px}
+  .tool-group{display:flex;width:auto}.tool-btn{width:58px;min-height:48px}
+  .tool-divider{width:1px;height:34px}
+  .brush-colors{display:flex}.canvas-column{width:100%;max-width:600px;margin:0 auto}
+  .canvas-foot{display:grid}.canvas-foot .placement-status,.canvas-foot .microcopy{max-width:none;text-align:left}
+  .inventory-grid{display:flex}
+}
+@media(max-width:480px){
+  .app{padding:7px}.card-head{padding-left:11px;padding-right:11px}
+  .canvas-toolbar{min-height:42px}.tool-status span{display:none}
+  .canvas-wrap{max-width:520px}.inventory-grid{display:flex}
+  .inventory-help{display:none}.compact-action{padding:6px 7px}
+}
+
+
+/* Canvas/content alignment and material preset strip */
+.canvas-wrap canvas,.ingredient-layer,.canvas-empty{inset:0;width:100%;height:100%}
+.inventory-grid{display:flex!important;grid-template-columns:none!important;overflow-x:auto!important;overflow-y:hidden!important;max-height:none!important}
+.inventory-slot{flex:0 0 66px!important;min-width:66px!important}
+@media(max-width:650px){.inventory-grid{display:flex!important}.inventory-slot{flex-basis:62px!important;min-width:62px!important}.inventory-name{width:60px}}
+
+
+
+/* Fixed single-screen workbench */
+html,body{height:100%;overflow:hidden}
+body{min-height:100dvh}
+.app{height:100dvh;max-width:1440px;padding:8px 12px;display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
+.topbar{min-height:52px;padding:2px 4px 7px;align-items:center}
+.brand h1{font-size:clamp(25px,3vw,36px);line-height:1;letter-spacing:.14em}
+.brand p{font-size:10px;margin-top:3px}
+.status-pill{padding:6px 10px;font-size:10px}
+.layout{display:block;min-height:0;height:100%;max-width:none;margin:0}
+.card.workshop{height:100%;padding:8px;overflow:hidden;border-radius:18px}
+.workbench-shell{height:100%;display:grid;grid-template-columns:58px minmax(320px,1fr) 194px;gap:9px;align-items:center;justify-content:center;padding:0}
+.tool-rail{width:58px;height:max-content;max-height:100%;padding:6px 5px;gap:7px;border-radius:14px}
+.tool-btn{min-height:48px;padding:4px 2px}.tool-btn svg{width:21px;height:21px}.tool-btn span{font-size:8px}
+.tool-divider{width:30px}.brush-colors{gap:5px}.brush-color,.brush-color input{width:31px;height:31px}
+.canvas-column{width:min(100%, calc(100dvh - 130px), calc(100vw - 310px), 580px);max-width:580px;min-width:0;align-self:center}
+.canvas-toolbar{height:43px;min-height:43px;padding:6px 9px;margin-bottom:6px;border-radius:12px}
+.tool-status strong{font-size:11px}.tool-status span{font-size:8px}.step-badge{padding:4px 7px;font-size:9px}
+.canvas-wrap{width:100%;max-width:none;height:auto!important;aspect-ratio:1/1;border-radius:13px;margin:0;contain:layout paint size}
+.canvas-wrap canvas{display:block;position:absolute;left:0;top:0;width:100%;height:100%;touch-action:none}
+.controls{bottom:8px;padding:4px;border-radius:12px}.btn{padding:8px 10px;border-radius:10px;font-size:10px}
+.canvas-foot{display:none!important}
+
+/* CSP-like compact material dab palette */
+.material-palette{height:min(100%,680px);min-height:0;align-self:center;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;gap:8px;padding:9px;border:1px solid var(--line);border-radius:15px;background:rgba(247,247,244,.92);box-shadow:0 8px 22px rgba(45,49,45,.06);overflow:hidden}
+.material-palette-head{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.material-palette-head>div{display:grid;gap:1px}.material-palette-head strong{font-size:12px}.material-palette-head .inventory-count{font-size:8px}
+.compact-action{font-size:8px;padding:5px 6px!important}
+.selected-material{display:flex;align-items:center;gap:8px;min-height:42px;padding:6px 7px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.68)}
+.selected-material-dab{width:27px;height:27px;flex:0 0 27px;border-radius:50%;background:#d7d9d4;border:1px solid #bfc2bc;box-shadow:inset -4px -5px 7px rgba(55,60,55,.10)}
+.selected-material div{display:grid;gap:0;min-width:0}.selected-material small{font-size:7px;color:var(--muted)}.selected-material strong{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inventory-grid{display:grid!important;grid-template-columns:repeat(4,36px)!important;align-content:start;justify-content:center;gap:5px!important;min-height:0;max-height:none!important;padding:3px!important;overflow-y:auto!important;overflow-x:hidden!important;scrollbar-width:thin;scroll-snap-type:none!important}
+.inventory-slot{--dab-size:22px;position:relative!important;width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;flex:none!important;display:grid!important;place-items:center!important;padding:0!important;border:1px solid transparent!important;border-radius:5px!important;background:transparent!important;cursor:pointer!important;scroll-snap-align:none!important}
+.inventory-slot:hover{background:rgba(255,255,255,.76)!important;border-color:var(--line)!important;transform:none!important}
+.inventory-slot.armed{background:#fff!important;border-color:#737a74!important;box-shadow:0 0 0 1px #737a74!important}
+.inventory-icon{width:32px!important;height:32px!important;border:0!important;border-radius:3px!important;background:transparent!important;display:grid!important;place-items:center!important;box-shadow:none!important;transform:none!important}
+.inventory-stone{width:var(--dab-size)!important;height:calc(var(--dab-size)*.82)!important;border-radius:48% 52% 44% 56% / 53% 44% 56% 47%;box-shadow:inset -4px -5px 7px rgba(62,68,62,.12)}
+.inventory-sample{width:var(--dab-size)!important;height:var(--dab-size)!important;display:grid;place-items:center}.inventory-sample svg{width:100%!important;height:100%!important;filter:drop-shadow(0 1px 1px rgba(45,49,45,.12))}
+.inventory-name,.inventory-meta{display:none!important}.inventory-empty{grid-column:1/-1!important;min-height:70px!important;padding:8px!important;font-size:8px!important;line-height:1.45!important;text-align:center!important}
+.material-palette-help{margin:0;padding-top:6px;border-top:1px solid var(--line);font-size:8px;line-height:1.45;color:var(--muted)}
+
+@media(max-width:850px){
+  html,body{overflow:auto}
+  .app{height:auto;min-height:100dvh;overflow:visible}
+  .workbench-shell{grid-template-columns:52px minmax(280px,1fr);align-items:start}
+  .canvas-column{width:min(100%,calc(100vw - 92px),560px)}
+  .material-palette{grid-column:1/-1;width:100%;height:132px;grid-template-columns:150px minmax(0,1fr);grid-template-rows:auto 1fr;padding:7px}
+  .material-palette-head{grid-column:1;grid-row:1}.selected-material{grid-column:1;grid-row:2}.inventory-grid{grid-column:2;grid-row:1/-1;display:flex!important;overflow-x:auto!important;overflow-y:hidden!important;justify-content:flex-start;padding:4px!important}.inventory-slot{flex:0 0 36px!important}.material-palette-help{display:none}
+}
+
+
+
+/* v009: unified tool rail and stable canvas coordinate system */
+html,body{height:100%;overflow:hidden}
+.app{height:100dvh;max-width:1280px;padding:8px 12px;grid-template-rows:auto minmax(0,1fr)}
+.topbar{min-height:50px;padding:2px 4px 7px}
+.card.workshop{height:100%;padding:8px;overflow:hidden}
+.workbench-shell{
+  height:100%;display:grid;grid-template-columns:152px minmax(320px,560px);
+  gap:10px;align-items:center;justify-content:center;padding:0;
+}
+.tool-rail{
+  width:152px;height:min(100%,640px);min-height:0;max-height:640px;
+  display:flex;flex-direction:column;align-items:stretch;gap:8px;
+  padding:8px;border:1px solid var(--line);border-radius:15px;
+  background:rgba(247,247,243,.94);box-shadow:0 8px 20px rgba(45,49,45,.06);overflow:hidden;
+}
+.mode-tools{display:grid!important;grid-template-columns:1fr 1fr;gap:5px;width:100%}
+.tool-btn{width:100%;min-height:48px;padding:4px 2px}
+.rail-section{min-height:0;border-top:1px solid var(--line);padding-top:8px}
+.material-brushes{display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:7px;flex:1;overflow:hidden}
+.rail-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:5px}
+.rail-section-head>div{display:grid;gap:1px;min-width:0}
+.rail-section-head strong,.rail-section-label{font-size:10px;font-weight:800}
+.rail-section-head .inventory-count{font-size:7px;white-space:nowrap}
+.rail-clear{border:0;background:transparent;padding:2px 3px;font-size:7px;color:var(--muted);cursor:pointer}
+.selected-material{min-height:38px;padding:5px 6px;gap:6px;border-radius:9px}
+.selected-material-dab{width:25px;height:25px;flex-basis:25px}
+.selected-material small{font-size:7px}.selected-material strong{font-size:8px}
+.inventory-grid{
+  display:grid!important;grid-template-columns:repeat(4,28px)!important;grid-auto-rows:28px;
+  align-content:start;justify-content:center;gap:4px!important;min-height:0;max-height:none!important;
+  padding:3px!important;overflow-y:auto!important;overflow-x:hidden!important;
+}
+.inventory-slot{width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;border-radius:4px!important}
+.inventory-icon{width:25px!important;height:25px!important}
+.inventory-slot{--dab-size:18px}
+.inventory-empty{grid-column:1/-1!important;min-height:62px!important;font-size:7px!important}
+.color-section{flex:0 0 auto}
+.brush-colors{display:flex;justify-content:center;gap:7px;margin-top:6px}
+.brush-color,.brush-color input{width:31px;height:31px}
+.canvas-column{
+  width:min(100%,calc(100dvh - 118px),calc(100vw - 190px),560px);
+  max-width:560px;min-width:0;align-self:center;
+}
+.canvas-wrap{
+  position:relative;width:100%;height:auto!important;aspect-ratio:1/1;max-width:none;margin:0;
+  border-radius:13px;overflow:hidden;contain:paint;isolation:isolate;
+}
+.canvas-wrap canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;touch-action:none;pointer-events:auto}
+.ingredient-layer{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.placed-material{pointer-events:auto}
+.canvas-wrap.drawing-mode .placed-material{pointer-events:none!important}
+.canvas-empty{z-index:3;pointer-events:none}
+.controls{z-index:5}
+.placed-material.sample .object{opacity:0!important}
+@media(max-width:760px){
+  html,body{overflow:auto}
+  .app{height:auto;min-height:100dvh;overflow:visible}
+  .workbench-shell{height:auto;grid-template-columns:1fr;align-items:start}
+  .tool-rail{width:min(100%,560px);height:auto;max-height:none;margin:0 auto;display:grid;grid-template-columns:112px minmax(0,1fr) 116px;align-items:start}
+  .mode-tools{grid-column:1}.material-brushes{grid-column:2;border-top:0;padding-top:0;max-height:116px}.color-section{grid-column:3;border-top:0;padding-top:0}
+  .inventory-grid{display:flex!important;overflow-x:auto!important;overflow-y:hidden!important;justify-content:flex-start;max-height:35px!important}
+  .inventory-slot{flex:0 0 28px!important}
+  .canvas-column{width:min(100%,560px);margin:0 auto}
+}
+
+
+/* v010: clear material-selection states and centered brush cells */
+.selected-material{
+  position:relative;
+  transition:border-color .15s ease,background .15s ease,box-shadow .15s ease;
+}
+.selected-material.is-empty{
+  border-style:dashed;
+  border-color:#c9ccc7;
+  background:rgba(250,250,247,.52);
+}
+.selected-material.is-empty .selected-material-dab{
+  position:relative;
+  background:transparent!important;
+  border:1px dashed #b9bdb7!important;
+  box-shadow:none!important;
+}
+.selected-material.is-empty .selected-material-dab::after{
+  content:"";
+  position:absolute;
+  left:50%;top:50%;
+  width:9px;height:1px;
+  background:#adb1ac;
+  transform:translate(-50%,-50%);
+}
+.selected-material.is-empty small{color:#969a95}
+.selected-material.is-empty strong{color:#858984;font-weight:600}
+.selected-material.is-active{
+  border-style:solid;
+  border-color:#747c76;
+  background:#f8faf7;
+  box-shadow:0 0 0 2px rgba(91,101,94,.10);
+}
+.selected-material.is-active::after{
+  content:"✓";
+  position:absolute;
+  right:5px;top:5px;
+  width:14px;height:14px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  background:#6e7771;
+  color:#fff;
+  font-size:8px;
+  font-weight:800;
+}
+.selected-material.is-active small{color:#687069;font-weight:700}
+.selected-material.is-active strong{color:#3f4541}
+.inventory-slot{
+  grid-template-columns:1fr!important;
+  grid-template-rows:1fr!important;
+  align-items:center!important;
+  justify-items:center!important;
+  place-items:center!important;
+  line-height:1!important;
+  overflow:visible!important;
+}
+.inventory-icon{
+  grid-column:1!important;
+  grid-row:1!important;
+  margin:0!important;
+  align-self:center!important;
+  justify-self:center!important;
+}
+.inventory-slot.armed{
+  position:relative!important;
+  border:1px solid #626a64!important;
+  background:#f7f9f6!important;
+  box-shadow:0 0 0 2px rgba(85,96,88,.14)!important;
+}
+.inventory-slot.armed::after{
+  content:"✓";
+  position:absolute;
+  right:-4px;top:-4px;
+  z-index:3;
+  width:12px;height:12px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  background:#626a64;
+  color:#fff;
+  border:1px solid #fff;
+  font-size:7px;
+  font-weight:900;
+  line-height:1;
+}
+.inventory-slot.armed .inventory-icon{
+  transform:scale(.88)!important;
+}
+.inventory-slot:not(.armed){
+  opacity:.78;
+}
+.inventory-slot:not(.armed):hover{
+  opacity:1;
+}
+
+
+
+/* v012: player-selected glyph count and combination-first categories */
+.mode-tools{display:none!important}
+.tool-rail{height:min(100%,650px);max-height:650px}
+.phase-panel{display:flex;flex-direction:column;gap:7px;min-height:0;flex:1}
+.phase-panel[hidden]{display:none!important}
+.material-brushes{grid-template-rows:none!important}
+.selected-material{min-height:54px;align-items:center}
+.selected-material>div:last-child{display:grid;gap:1px;min-width:0}
+.selected-material-meta{font-size:7px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.selected-material-dab{--selected-icon-size:38px;width:48px!important;height:48px!important;flex:0 0 48px!important;border-radius:10px!important;display:grid;place-items:center;background:rgba(255,255,255,.72)!important;overflow:visible;box-shadow:none!important}
+.selected-material.is-empty .selected-material-dab{border:1px dashed var(--line-strong)!important}
+.selected-material.is-empty .selected-material-dab::after{content:'+';font-size:18px;color:#a0a39f}
+.selected-material.is-active .selected-material-dab::after{display:none}
+.selected-stone-shape{width:var(--selected-icon-size);height:calc(var(--selected-icon-size)*.82);border-radius:47% 53% 43% 57% / 54% 45% 55% 46%;background:linear-gradient(145deg,#e4e5df,#aaafa8);box-shadow:inset -6px -7px 10px rgba(62,68,62,.12),0 2px 4px rgba(45,49,45,.08)}
+.selected-sample-shape{width:var(--selected-icon-size);height:var(--selected-icon-size);display:grid;place-items:center}
+.selected-sample-shape svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 2px 3px rgba(45,49,45,.10))}
+.inventory-category-dot{position:absolute;left:2px;top:2px;width:5px;height:5px;border-radius:50%;background:var(--category-color);z-index:3;box-shadow:0 0 0 1px rgba(255,255,255,.8)}
+.phase-button{width:100%;border:1px solid #59625c;background:#59625c;color:#fff;border-radius:10px;padding:8px 9px;font-size:9px;font-weight:700;cursor:pointer;margin-top:auto}
+.phase-button:disabled{opacity:.35;cursor:not-allowed}
+.draw-phase-tools{overflow:hidden}
+.glyph-progress{display:flex;justify-content:space-between;gap:5px;padding:6px 7px;border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,.58);font-size:7px;color:var(--muted)}
+.glyph-color-list{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.glyph-color{position:relative;display:grid;place-items:center;aspect-ratio:1;border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.66);cursor:pointer;overflow:hidden}
+.glyph-color[hidden]{display:none}
+.glyph-color input{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);border:0;padding:0;background:none;border-radius:50%;overflow:hidden;cursor:pointer}
+.glyph-color input::-webkit-color-swatch-wrapper{padding:0}.glyph-color input::-webkit-color-swatch{border:0;border-radius:50%}
+.glyph-color span{position:absolute;right:1px;bottom:1px;width:13px;height:13px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1px solid var(--line);font-size:7px;pointer-events:none}
+.glyph-book{display:grid;grid-template-rows:auto 1fr;gap:5px;min-height:0;margin-top:2px}
+.glyph-book-head{display:flex;justify-content:space-between;align-items:center;font-size:8px}.glyph-book-head span{font-size:7px;color:var(--muted)}
+.glyph-book-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;align-content:start}
+.glyph-book-cell{min-height:44px;border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.54);display:grid;place-items:center;padding:3px;color:var(--muted)}
+.glyph-book-cell span{height:25px;display:grid;place-items:center;font-size:14px}.glyph-book-cell svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.glyph-book-cell small{font-size:6px}.glyph-book-cell.locked{opacity:.42;border-style:dashed}.glyph-book-cell.found{color:#505752;background:#fff}
+.canvas-wrap.drawing-mode .placed-material{pointer-events:none!important}
+.canvas-wrap.drawing-mode .placed-remove{display:none!important}
+@media(max-width:850px){.phase-panel{max-height:116px}.glyph-book-grid{grid-template-columns:repeat(5,42px)}.glyph-book-cell{min-height:40px}.phase-button{margin-top:0}.selected-material{min-width:150px}}
+
 </style>
 </head>
 <body>
@@ -116,67 +437,73 @@ button,input{font:inherit} button{color:inherit}
 
   <main class="layout">
     <section class="card workshop">
-      <div class="card-head">
-        <div><h2>錬成キャンバス</h2><p>研究棚から材料をキャンバスへ置き、その周囲に三つの紋様を描きます。</p></div>
-      </div>
+      <div class="workbench-shell">
+        <nav class="tool-rail" aria-label="錬成ツール">
+          <div class="tool-group mode-tools">
+            <button class="tool-btn active" id="placeModeBtn" type="button" title="材料配置">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="10" r="4.2"></circle><path d="M13 7.5l4-2 2.5 3.5-3 3.2"></path><path d="M5.5 15.5h12"></path></svg>
+              <span>材料</span>
+            </button>
+            <button class="tool-btn" id="drawModeBtn" type="button" title="紋様描画">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18.5l2.1-5.1L16.8 3.7a1.7 1.7 0 012.4 2.4l-9.7 9.7L5 18.5z"></path><path d="M13.9 6.6l3.5 3.5"></path></svg>
+              <span>紋様</span>
+            </button>
+          </div>
 
-      <div class="mode-row">
-        <div class="mode-switch">
-          <button class="mode-btn active" id="placeModeBtn">材料配置</button>
-          <button class="mode-btn" id="drawModeBtn">紋様描画</button>
-        </div>
-        <div class="colors">
-          <label class="color-control"><input type="color" id="color1" value="#557f92"><span><strong>第一</strong>基質</span></label>
-          <label class="color-control"><input type="color" id="color2" value="#b26f60"><span><strong>第二</strong>変化</span></label>
-          <label class="color-control"><input type="color" id="color3" value="#84965e"><span><strong>第三</strong>構造</span></label>
-        </div>
-        <div class="placement-status" id="placementStatus">材料を選び、魔法陣へ置きます</div>
-      </div>
+          <section class="rail-section material-brushes phase-panel" id="placePhaseTools" aria-label="材料一覧">
+            <div class="rail-section-head">
+              <div><strong>材料一覧</strong><span class="inventory-count" id="inventoryCount">原基石 + 0試料</span></div>
+              <button class="rail-clear" id="clearDataBtn" type="button" title="保存データを初期化">初期化</button>
+            </div>
+            <div class="selected-material is-empty" id="selectedMaterialCard">
+              <div class="selected-material-dab" id="selectedMaterialDab" aria-hidden="true"></div>
+              <div><small id="selectedMaterialState">材料を選択</small><strong id="selectedMaterialName">未選択</strong><span class="selected-material-meta" id="selectedMaterialMeta">一覧から材料を選択</span></div>
+            </div>
+            <div class="inventory-grid" id="inventoryGrid"></div>
+            <button class="phase-button" id="toDrawPhaseBtn" type="button" disabled>紋様配置へ</button>
+          </section>
 
-      <div class="canvas-wrap placement-mode" id="canvasWrap">
-        <div class="stage-info">
-          <div><h3 id="stepTitle">材料を配置してください</h3><p id="stepHelp">原基石は無限です。研究成果は一度の錬成につき一つ消費されます。</p></div>
-          <div class="step-badge" id="stepBadge">配置</div>
-        </div>
-        <canvas id="sigilCanvas"></canvas>
-        <div class="ingredient-layer" id="ingredientLayer"></div>
-        <div class="canvas-empty" id="canvasEmpty">下のインベントリから材料を選び、魔法陣へ配置してください。</div>
-        <div class="controls">
-          <button class="btn primary" id="synthesizeBtn" hidden>錬成する</button>
-          <button class="btn" id="newSynthesisBtn" hidden>次の錬成</button>
+          <section class="rail-section draw-phase-tools phase-panel" id="drawPhaseTools" aria-label="紋様配置" hidden>
+            <div class="rail-section-head">
+              <div><strong>紋様配置</strong><span class="inventory-count" id="levelLabel">研究 Lv.1</span></div>
+              <button class="rail-clear" id="backToMaterialsBtn" type="button">材料へ戻る</button>
+            </div>
+            <div class="glyph-progress"><span id="glyphCapacityLabel">最大紋様数 1</span><span id="levelProgressLabel">次のレベルまで 2回</span></div>
+            <div class="glyph-color-list" id="glyphColorList">
+              <label class="glyph-color" data-glyph-index="0" title="第一紋様の色"><input type="color" id="color1" value="#557f92"><span>1</span></label>
+              <label class="glyph-color" data-glyph-index="1" title="第二紋様の色"><input type="color" id="color2" value="#b26f60"><span>2</span></label>
+              <label class="glyph-color" data-glyph-index="2" title="第三紋様の色"><input type="color" id="color3" value="#84965e"><span>3</span></label>
+              <label class="glyph-color" data-glyph-index="3" title="第四紋様の色"><input type="color" id="color4" value="#7c7191"><span>4</span></label>
+              <label class="glyph-color" data-glyph-index="4" title="第五紋様の色"><input type="color" id="color5" value="#a58b55"><span>5</span></label>
+            </div>
+            <div class="glyph-book">
+              <div class="glyph-book-head"><strong>紋様図鑑</strong><span id="glyphBookCount">0 / 5</span></div>
+              <div class="glyph-book-grid" id="glyphBookGrid"></div>
+            </div>
+          </section>
+        </nav>
+
+        <div class="canvas-column">
+          <div class="canvas-toolbar">
+            <div class="tool-status">
+              <strong id="stepTitle">材料を配置してください</strong>
+              <span id="stepHelp">材料一覧から選び、キャンバスをクリックして配置します。</span>
+            </div>
+            <div class="step-badge" id="stepBadge">配置</div>
+          </div>
+
+          <div class="canvas-wrap placement-mode" id="canvasWrap">
+            <canvas id="sigilCanvas"></canvas>
+            <div class="ingredient-layer" id="ingredientLayer"></div>
+            <div class="canvas-empty" id="canvasEmpty">材料一覧から選び、魔法陣へ一つ以上配置してください。</div>
+            <div class="controls">
+              <button class="btn primary" id="synthesizeBtn" hidden>錬成する</button>
+              <button class="btn" id="newSynthesisBtn" hidden>次の錬成</button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="microcopy">三色のうち、最も大きく・整って・中心性の高い紋様の色が生成物の主色になります。</div>
-
-      <section class="inventory">
-        <div class="inventory-toolbar"><span class="inventory-count" id="inventoryCount">原基石 + 0試料</span><span class="placement-status">ドラッグ／選択して配置</span><button class="btn ghost" id="clearDataBtn">研究記録を初期化</button></div>
-        <div class="inventory-grid" id="inventoryGrid"></div>
-      </section>
     </section>
-
-    <aside class="sidebar">
-      <section class="card observer">
-        <div class="card-head"><div><h2>観察記録</h2><p>正体ではなく、確認できた現象のみを記録します。</p></div></div>
-        <div class="observer-copy">
-          <div class="observer-name-row"><div class="observer-name" id="specimenName">未観察</div><div class="classification" id="classification">記録なし</div></div>
-          <div class="observations" id="observations"><div class="observation locked">錬成後に観察記録が表示されます</div></div>
-        </div>
-        <div class="observer-actions">
-          <button class="btn" id="researchBtn" disabled>追加観察</button>
-          <button class="btn ghost" id="renameBtn" disabled>名称を付ける</button>
-        </div>
-      </section>
-
-      <section class="card notebook">
-        <h2>研究ノート</h2>
-        <div class="notebook-grid">
-          <div class="notebook-stat"><strong id="synthesisCount">0</strong><span>錬成回数</span></div>
-          <div class="notebook-stat"><strong id="maxDepth">0</strong><span>最大再錬成層</span></div>
-          <div class="notebook-stat"><strong id="phenomenaCount">0</strong><span>特異現象</span></div>
-        </div>
-        <div class="route-note" id="routeNote">現在は石の反応域だけが確認されています。高い変換性・再構成性・安定性を同じ試料へ集積すると、次の研究領域へ進む可能性があります。</div>
-      </section>
-    </aside>
   </main>
 </div>
 <div class="toast" id="toast"></div>
@@ -191,10 +518,20 @@ button,input{font:inherit} button{color:inherit}
   const wrap = $('canvasWrap');
   const ingredientLayer = $('ingredientLayer');
   const STORAGE_KEY = 'alchemy_arty_workbench_v3';
-  const defaultColors = ['#557f92','#b26f60','#84965e'];
+  const defaultColors = ['#557f92','#b26f60','#84965e','#7c7191','#a58b55'];
+  const LEVEL_TABLE = [
+    {level:1,min:0,glyphs:1},
+    {level:2,min:2,glyphs:2},
+    {level:3,min:5,glyphs:3},
+    {level:4,min:9,glyphs:4},
+    {level:5,min:14,glyphs:5}
+  ];
+  const GLYPH_SHAPES = ['circle','triangle','inverted','square','line'];
   const MAX_PLACED = 6;
 
   let dpr = 1;
+  let logicalWidth = 1;
+  let logicalHeight = 1;
   let drawing = false;
   let currentPoints = [];
   let strokeStartedAt = 0;
@@ -209,25 +546,66 @@ button,input{font:inherit} button{color:inherit}
   state.mode = 'place';
   state.armedMaterial = null;
   state.displayResult = !!state.current;
-  state.colors = state.colors || defaultColors.slice();
+  state.colors = Array.isArray(state.colors) ? state.colors.slice(0,5) : defaultColors.slice();
+  while(state.colors.length<5)state.colors.push(defaultColors[state.colors.length]);
+  state.glyphBook = state.glyphBook && typeof state.glyphBook==='object' ? state.glyphBook : {};
+  state.mode = state.displayResult ? 'result' : 'place';
+
+  function normalizeMaterialRecord(raw){
+    const m=raw && typeof raw==='object' ? raw : {};
+    const lc=(v,min=0,max=100)=>Math.max(min,Math.min(max,v));
+    const validHex=v=>typeof v==='string'&&/^#[0-9a-f]{6}$/i.test(v);
+    const hexRgb=hex=>{const n=parseInt(hex.slice(1),16);return{r:(n>>16)&255,g:(n>>8)&255,b:n&255}};
+    const rgbHex=(r,g,b)=>'#'+[r,g,b].map(v=>Math.round(lc(v,0,255)).toString(16).padStart(2,'0')).join('');
+    const mix=(a,b,t)=>{const A=hexRgb(a),B=hexRgb(b);return rgbHex(A.r+(B.r-A.r)*t,A.g+(B.g-A.g)*t,A.b+(B.b-A.b)*t)};
+    const palette=base=>[mix(base,'#ffffff',.62),mix(base,'#ffffff',.12),mix(base,'#303330',.28)];
+    const base=(Array.isArray(m.sourceColors)?m.sourceColors:Array.isArray(m.colors)?m.colors:defaultColors).slice(0,5);
+    while(base.length<5)base.push(defaultColors[base.length]);
+    m.sourceColors=base.map((v,i)=>validHex(v)?v:defaultColors[i]);
+    const dominant=Number.isFinite(+m.dominantColorIndex)?lc(Math.round(+m.dominantColorIndex),0,4):0;
+    m.dominantColorIndex=dominant;
+    m.colors=palette(m.sourceColors[dominant]);
+    m.depth=lc(Number.isFinite(+m.depth)?Math.round(+m.depth):1,1,20);
+    m.seed=Number.isFinite(+m.seed)?+m.seed:Math.random()*1000;
+    m.stats=m.stats&&typeof m.stats==='object'?m.stats:{};
+    const keys=['mineral','liquid','organic','gas','light','heat','growth','circulation','absorption','transmission','regeneration','division','transformation','stability','purity','autonomy','memory','symmetry','containment','branching','group','density'];
+    keys.forEach(k=>m.stats[k]=lc(Number.isFinite(+m.stats[k])?+m.stats[k]:0,0,100));
+    const allowed=new Set(['circle','triangle','inverted','square','line','unknown']);
+    m.strokeSummary=(Array.isArray(m.strokeSummary)?m.strokeSummary:[]).slice(0,5).map(s=>{
+      s=s&&typeof s==='object'?s:{};
+      const rawSize=Number.isFinite(+s.size)?+s.size:35;
+      const center=s.center&&typeof s.center==='object'?s.center:{x:.5,y:.5};
+      const fixCoord=v=>{v=Number.isFinite(+v)?+v:.5;return v>1?lc(v/600,0,1):lc(v,0,1)};
+      return{shape:allowed.has(s.shape)?s.shape:'unknown',size:lc(rawSize>180?rawSize/6:rawSize,6,100),precision:lc(Number.isFinite(+s.precision)?+s.precision:50,0,100),speed:lc(Number.isFinite(+s.speed)?+s.speed:50,0,100),center:{x:fixCoord(center.x),y:fixCoord(center.y)}};
+    });
+    if(!m.strokeSummary.length)m.strokeSummary.push({shape:'circle',size:28,precision:50,speed:50,center:{x:.5,y:.5}});
+    const origin=m.placement&&m.placement.origin?m.placement.origin:{x:.5,y:.5};
+    const fixOrigin=v=>{v=Number.isFinite(+v)?+v:.5;return v>1?lc(v/600,0,1):lc(v,0,1)};
+    m.placement={...(m.placement||{}),origin:{x:fixOrigin(origin.x),y:fixOrigin(origin.y)}};
+    m.parents=Array.isArray(m.parents)?m.parents.slice(0,12):[];
+    m.flags=m.flags&&typeof m.flags==='object'?m.flags:{};
+    m.category=categoryFromGlyphCombination(m.strokeSummary,m.flags,m.stats);
+    return m;
+  }
 
   function loadState(){
     try{
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
       if(saved && Array.isArray(saved.inventory)){
         return {
-          inventory:saved.inventory.map(m=>{if(!m.sourceColors){m.sourceColors=(m.colors||defaultColors).slice();m.dominantColorIndex=0;m.colors=singleColorPalette((m.colors||defaultColors)[0]);}return m;}),
-          current:saved.current || null,
+          inventory:saved.inventory.map(normalizeMaterialRecord),
+          current:saved.current ? normalizeMaterialRecord(saved.current) : null,
           synthesisCount:saved.synthesisCount || 0,
-          colors:saved.colors || defaultColors.slice()
+          colors:saved.colors || defaultColors.slice(),
+          glyphBook:saved.glyphBook || {}
         };
       }
     }catch(err){ console.warn(err); }
-    return {inventory:[],current:null,synthesisCount:0,colors:defaultColors.slice()};
+    return {inventory:[],current:null,synthesisCount:0,colors:defaultColors.slice(),glyphBook:{}};
   }
 
   function saveState(){
-    localStorage.setItem(STORAGE_KEY,JSON.stringify({inventory:state.inventory,current:state.current,synthesisCount:state.synthesisCount,colors:state.colors}));
+    localStorage.setItem(STORAGE_KEY,JSON.stringify({inventory:state.inventory,current:state.current,synthesisCount:state.synthesisCount,colors:state.colors,glyphBook:state.glyphBook}));
     $('saveStatus').textContent='研究記録を保存しました';
     setTimeout(()=>$('saveStatus').textContent='研究記録を保存しています',900);
   }
@@ -251,6 +629,150 @@ button,input{font:inherit} button{color:inherit}
     return {index,scores:scores.map(Math.round)};
   }
   function hexToHsl(hex){const {r,g,b}=hexToRgb(hex),R=r/255,G=g/255,B=b/255,max=Math.max(R,G,B),min=Math.min(R,G,B);let h=0,s=0;const l=(max+min)/2,d=max-min;if(d){s=d/(1-Math.abs(2*l-1));if(max===R)h=60*(((G-B)/d)%6);else if(max===G)h=60*((B-R)/d+2);else h=60*((R-G)/d+4);}return{h:(h+360)%360,s:s*100,l:l*100};}
+  function researchLevelInfo(count=state.synthesisCount){
+    let current=LEVEL_TABLE[0],next=null;
+    for(let i=0;i<LEVEL_TABLE.length;i++){if(count>=LEVEL_TABLE[i].min)current=LEVEL_TABLE[i];else{next=LEVEL_TABLE[i];break;}}
+    return{...current,next,remaining:next?Math.max(0,next.min-count):0};
+  }
+  function maxGlyphsAllowed(){return researchLevelInfo().glyphs;}
+  function requiredGlyphs(){return maxGlyphsAllowed();}
+  function ordinalJa(index){return ['一','二','三','四','五'][index]||String(index+1);}
+  function familyFromStats(stats={},flags={}){
+    if(flags.selfMaintaining||((stats.autonomy||0)>54&&(stats.organic||0)>34))return'生物状';
+    if((stats.growth||0)>48&&((stats.organic||0)>25||(stats.branching||0)>38))return'植物状';
+    const groups=[
+      ['水状',Math.max(stats.liquid||0,(stats.circulation||0)*.8)],
+      ['鉱石',Math.max(stats.mineral||0,(stats.density||0)*.85,(stats.stability||0)*.72)],
+      ['気体状',Math.max(stats.gas||0,(stats.transmission||0)*.65)],
+      ['発光体',Math.max(stats.light||0,(stats.heat||0)*.58)]
+    ].sort((a,b)=>b[1]-a[1]);
+    return groups[0][1]>=42?groups[0][0]:'複合体';
+  }
+
+  function categoryFrom(stats={},flags={}){return `${familyFromStats(stats,flags)}・未詳体`;}
+
+  function shapeCode(shape){return({circle:'C',triangle:'T',inverted:'I',square:'S',line:'L',unknown:'U'})[shape]||'U';}
+  function shapeToken(code){return({C:'環',T:'灯',I:'根',S:'殻',L:'糸',U:'異'})[code]||'異';}
+  function categoryFamily(category=''){return String(category).split('・')[0]||'複合体';}
+  function glyphCodeList(strokes=[]){return(Array.isArray(strokes)?strokes:[]).map(s=>shapeCode(s?.analysis?.shape||s?.shape||'unknown')).filter(Boolean);}
+  function orderedGlyphSignature(strokes=[]){return glyphCodeList(strokes).join('');}
+  function multisetGlyphSignature(strokes=[]){return glyphCodeList(strokes).sort().join('');}
+
+  const RARE_CATEGORY_MAP={
+    'CLTSI':{name:'秘奥・賢者核',family:'秘奥',rare:true},
+    'CILTS':{name:'生物状・脈生体',family:'生物状',rare:true},
+    'TSCLI':{name:'植物状・天枝樹',family:'植物状',rare:true},
+    'SILCT':{name:'鉱石・深晶骸',family:'鉱石',rare:true},
+    'LSTCI':{name:'発光体・星環炉',family:'発光体',rare:true}
+  };
+
+  const CATEGORY_SIGNATURE_MAP={
+    'C':{name:'水状・雫体',family:'水状'},
+    'T':{name:'発光体・灯塔体',family:'発光体'},
+    'I':{name:'鉱石・晶錐体',family:'鉱石'},
+    'S':{name:'石質・石板体',family:'石質'},
+    'L':{name:'気体状・霧糸体',family:'気体状'},
+    'CL':{name:'植物状・苗脈体',family:'植物状'},
+    'CT':{name:'発光体・灯泡体',family:'発光体'},
+    'CI':{name:'水状・潮核体',family:'水状'},
+    'CS':{name:'石質・殻滴体',family:'石質'},
+    'TL':{name:'植物状・羽枝体',family:'植物状'},
+    'IL':{name:'植物状・根脈体',family:'植物状'},
+    'SL':{name:'複合体・格子相体',family:'複合体'},
+    'TI':{name:'鉱石・晶塔体',family:'鉱石'},
+    'TS':{name:'鉱石・層塔体',family:'鉱石'},
+    'IS':{name:'鉱石・地殻体',family:'鉱石'},
+    'CLT':{name:'植物状・花脈体',family:'植物状'},
+    'CLI':{name:'植物状・苔脈体',family:'植物状'},
+    'CLS':{name:'植物状・苗殻体',family:'植物状'},
+    'CTI':{name:'発光体・潮灯体',family:'発光体'},
+    'CTS':{name:'発光体・殻灯体',family:'発光体'},
+    'CIS':{name:'水状・鉱胞体',family:'水状'},
+    'TIL':{name:'鉱石・棘群体',family:'鉱石'},
+    'TSL':{name:'発光体・灯枝体',family:'発光体'},
+    'ISL':{name:'植物状・根殻体',family:'植物状'},
+    'TIS':{name:'鉱石・晶冠体',family:'鉱石'},
+    'CLTI':{name:'複合体・環棘相体',family:'複合体'},
+    'CLTS':{name:'複合体・花殻相体',family:'複合体'},
+    'CLIS':{name:'複合体・苗殻核体',family:'複合体'},
+    'CTIS':{name:'複合体・晶灯相体',family:'複合体'},
+    'LTIS':{name:'複合体・棘格相体',family:'複合体'},
+    'CLTIS':{name:'複合体・五相胎',family:'複合体'}
+  };
+
+  function inferFamilyFromSignature(sig,flags={},stats={}){
+    const set=new Set(sig.split(''));
+    if(flags.selfMaintaining&&set.has('C')&&set.has('L')&&sig.length>=3)return'生物状';
+    if(set.size===1){
+      if(set.has('C'))return'水状';
+      if(set.has('T'))return'発光体';
+      if(set.has('I'))return'鉱石';
+      if(set.has('S'))return'石質';
+      if(set.has('L'))return'気体状';
+    }
+    if(set.has('L')&&(set.has('C')||set.has('T')||set.has('I')))return'植物状';
+    if((set.has('I')||set.has('S'))&&(set.has('T')||set.has('I')||set.has('S'))&&!set.has('L'))return'鉱石';
+    if(set.has('T')&&!set.has('L'))return'発光体';
+    if(set.has('C')&&!set.has('L')&&!set.has('T'))return'水状';
+    return familyFromStats(stats,flags);
+  }
+
+  function generatedCategoryName(sig,family){
+    const counts={};
+    sig.split('').forEach(c=>counts[c]=(counts[c]||0)+1);
+    const order=['C','T','I','S','L'];
+    const countLabel={2:'双',3:'三',4:'四',5:'五'};
+    const parts=order.filter(c=>counts[c]).map(c=>`${countLabel[counts[c]]||''}${shapeToken(c)}`);
+    const suffix={水状:'滴体',石質:'石体',鉱石:'晶体',植物状:'芽体',生物状:'生体',気体状:'霧体',発光体:'灯体',複合体:'相体',秘奥:'核'}[family]||'体';
+    return `${family}・${parts.join('')}${suffix}`;
+  }
+
+  function categoryMetaFromGlyphCombination(strokes=[],flags={},stats={}){
+    const ordered=orderedGlyphSignature(strokes),multiset=multisetGlyphSignature(strokes);
+    if(!ordered)return{name:categoryFrom(stats,flags),family:familyFromStats(stats,flags),rare:false};
+    if(RARE_CATEGORY_MAP[ordered]&&ordered.length===5)return RARE_CATEGORY_MAP[ordered];
+    if(CATEGORY_SIGNATURE_MAP[multiset])return CATEGORY_SIGNATURE_MAP[multiset];
+    const family=inferFamilyFromSignature(multiset,flags,stats);
+    return{name:generatedCategoryName(multiset,family),family,rare:false};
+  }
+
+  function categoryFromGlyphCombination(strokes=[],flags={},stats={}){
+    return categoryMetaFromGlyphCombination(strokes,flags,stats).name;
+  }
+
+  function glyphCombinationLabel(strokes=[]){
+    const names=(Array.isArray(strokes)?strokes:[]).map(s=>glyphName(s?.analysis?.shape||s?.shape||'unknown'));
+    return names.length?names.join('＋'):'未解析';
+  }
+
+  function categoryColor(category){return({石:'#9aa09a',石質:'#92968f',鉱石:'#8d918c',水状:'#7f9ea9',植物状:'#879a76',生物状:'#a17d76',気体状:'#a5a7a2',発光体:'#b5a06c',複合体:'#8d8495',秘奥:'#8d789e'})[categoryFamily(category)]||'#90938f';}
+  function glyphName(shape){return({circle:'丸',triangle:'三角',inverted:'逆三角',square:'四角',line:'線',unknown:'未分類'})[shape]||'未分類';}
+  function glyphSvg(shape){
+    if(shape==='circle')return'<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="9"/></svg>';
+    if(shape==='triangle')return'<svg viewBox="0 0 32 32"><path d="M16 6 L26 24 L6 24 Z"/></svg>';
+    if(shape==='inverted')return'<svg viewBox="0 0 32 32"><path d="M6 8 L26 8 L16 26 Z"/></svg>';
+    if(shape==='square')return'<svg viewBox="0 0 32 32"><rect x="8" y="8" width="16" height="16" rx="1"/></svg>';
+    return'<svg viewBox="0 0 32 32"><path d="M7 23 L25 9"/></svg>';
+  }
+  function discoverGlyph(shape){
+    if(!GLYPH_SHAPES.includes(shape))return;
+    const isNew=!state.glyphBook[shape];
+    state.glyphBook[shape]=(state.glyphBook[shape]||0)+1;
+    saveState();renderGlyphBook();
+    if(isNew)showToast(`紋様図鑑に「${glyphName(shape)}」を登録しました`);
+  }
+  function renderGlyphBook(){
+    const grid=$('glyphBookGrid');if(!grid)return;
+    grid.innerHTML=GLYPH_SHAPES.map(shape=>{const found=Boolean(state.glyphBook[shape]);return`<div class="glyph-book-cell ${found?'found':'locked'}" title="${found?glyphName(shape):'未発見'}"><span>${found?glyphSvg(shape):'?'}</span><small>${found?glyphName(shape):'未発見'}</small></div>`;}).join('');
+    $('glyphBookCount').textContent=`${GLYPH_SHAPES.filter(s=>state.glyphBook[s]).length} / ${GLYPH_SHAPES.length}`;
+  }
+  function renderLevelUI(){
+    const info=researchLevelInfo();
+    if($('levelLabel'))$('levelLabel').textContent=`研究 Lv.${info.level}`;
+    if($('glyphCapacityLabel'))$('glyphCapacityLabel').textContent=`最大紋様数 ${info.glyphs}`;
+    if($('levelProgressLabel'))$('levelProgressLabel').textContent=info.next?`次のレベルまで ${info.remaining}回`:'最大レベル';
+    document.querySelectorAll('[data-glyph-index]').forEach(el=>{const index=Number(el.dataset.glyphIndex);el.hidden=index>=info.glyphs;});
+  }
 
   const statKeys=['mineral','liquid','organic','gas','light','heat','growth','circulation','absorption','transmission','regeneration','division','transformation','stability','purity','autonomy','memory','symmetry','containment','branching','group','density'];
   const emptyStats=()=>Object.fromEntries(statKeys.map(k=>[k,0]));
@@ -274,6 +796,23 @@ button,input{font:inherit} button{color:inherit}
     return Object.assign(s,table[role][shape]||table[role].unknown);
   }
 
+  function shapeContributionForCount(shape,index,count){
+    const result=emptyStats();
+    if(count<=1){
+      addStats(result,shapeContribution(shape,'substrate'),.44);
+      addStats(result,shapeContribution(shape,'activity'),.29);
+      addStats(result,shapeContribution(shape,'structure'),.27);
+      return result;
+    }
+    if(count===2){
+      if(index===0){addStats(result,shapeContribution(shape,'substrate'),.62);addStats(result,shapeContribution(shape,'structure'),.38);}
+      else{addStats(result,shapeContribution(shape,'activity'),.60);addStats(result,shapeContribution(shape,'structure'),.40);}
+      return result;
+    }
+    const roles=['substrate','activity','structure','activity','structure'];
+    return shapeContribution(shape,roles[index]||'structure');
+  }
+
   function colorContribution(hex){
     const hsl=hexToHsl(hex),s=emptyStats(),h=hsl.h;
     if(h<25||h>=345){s.heat+=24;s.transformation+=17;}
@@ -288,29 +827,54 @@ button,input{font:inherit} button{color:inherit}
     return s;
   }
 
+  function stageRect(){return wrap.getBoundingClientRect();}
+  function stageSize(){return{width:logicalWidth,height:logicalHeight};}
+
   function resizeCanvas(){
-    const r=wrap.getBoundingClientRect();
-    dpr=Math.max(1,Math.min(2,devicePixelRatio||1));
-    canvas.width=Math.round(r.width*dpr);canvas.height=Math.round(r.height*dpr);
-    ctx.setTransform(dpr,0,0,dpr,0,0);drawScene(performance.now());
+    const r=stageRect();
+    const width=Math.max(1,r.width),height=Math.max(1,r.height);
+    const oldWidth=logicalWidth,oldHeight=logicalHeight;
+    if(oldWidth>2&&oldHeight>2&&(Math.abs(width-oldWidth)>1||Math.abs(height-oldHeight)>1)){
+      const sx=width/oldWidth,sy=height/oldHeight;
+      state.strokes.forEach(stroke=>stroke.points.forEach(p=>{p.x*=sx;p.y*=sy;}));
+      currentPoints.forEach(p=>{p.x*=sx;p.y*=sy;});
+    }
+    logicalWidth=width;logicalHeight=height;
+    dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1));
+    const nextWidth=Math.max(1,Math.round(width*dpr)),nextHeight=Math.max(1,Math.round(height*dpr));
+    if(canvas.width!==nextWidth||canvas.height!==nextHeight){canvas.width=nextWidth;canvas.height=nextHeight;}
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    drawScene(performance.now());
   }
 
-  function eventPoint(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
-  function normalizedPoint(e){const p=eventPoint(e),r=canvas.getBoundingClientRect();return{x:clamp(p.x/r.width,0,1),y:clamp(p.y/r.height,0,1)};}
+  function eventPoint(e){
+    const r=stageRect();
+    const nx=clamp((e.clientX-r.left)/Math.max(1,r.width),0,1);
+    const ny=clamp((e.clientY-r.top)/Math.max(1,r.height),0,1);
+    return{x:nx*logicalWidth,y:ny*logicalHeight};
+  }
+  function normalizedPoint(e){const p=eventPoint(e);return{x:clamp(p.x/Math.max(1,logicalWidth),0,1),y:clamp(p.y/Math.max(1,logicalHeight),0,1)};}
 
   function setMode(mode){
+    if(mode==='draw'&&!state.placed.length){showToast('先に材料を一つ以上配置してください');mode='place';}
+    if(state.displayResult)mode='result';
     state.mode=mode;
-    $('placeModeBtn').classList.toggle('active',mode==='place');
-    $('drawModeBtn').classList.toggle('active',mode==='draw');
+    const placeBtn=$('placeModeBtn'),drawBtn=$('drawModeBtn');
+    if(placeBtn)placeBtn.classList.toggle('active',mode==='place');
+    if(drawBtn)drawBtn.classList.toggle('active',mode==='draw');
+    $('placePhaseTools').hidden=mode!=='place';
+    $('drawPhaseTools').hidden=mode!=='draw';
     wrap.classList.toggle('placement-mode',mode==='place');
     wrap.classList.toggle('drawing-mode',mode==='draw');
-    updateStep();
+    renderLevelUI();updateStep();
   }
 
   $('placeModeBtn').addEventListener('click',()=>setMode('place'));
   $('drawModeBtn').addEventListener('click',()=>setMode('draw'));
+  $('toDrawPhaseBtn').addEventListener('click',()=>{if(!state.placed.length){showToast('材料を一つ以上配置してください');return;}state.armedMaterial=null;renderInventory();setMode('draw');});
+  $('backToMaterialsBtn').addEventListener('click',()=>setMode('place'));
 
-  function materialByKey(key){return key==='stone'?{id:'stone',name:'原基石',depth:0,colors:['#dfe0db','#b9bdb6','#999f98'],className:'無限原基材',traits:['鉱物性','安定性']} : state.inventory.find(m=>m.id===key);}
+  function materialByKey(key){if(key==='stone')return{id:'stone',name:'原基石',depth:0,colors:['#dfe0db','#b9bdb6','#999f98'],sourceColors:['#dfe0db','#b9bdb6','#999f98'],className:'無限原基材',category:'石',traits:['鉱物性','安定性'],strokeSummary:[{shape:'square',size:34,precision:80,center:{x:.5,y:.5}}],stats:stoneStats,seed:1};const found=state.inventory.find(m=>m.id===key);return found?normalizeMaterialRecord(found):null;}
 
   function canPlace(key){
     if(state.displayResult)return false;
@@ -322,7 +886,6 @@ button,input{font:inherit} button{color:inherit}
   function placeMaterial(key,x,y){
     if(!canPlace(key))return;
     state.placed.push({uid:uid(),materialId:key,x:clamp(x,.08,.92),y:clamp(y,.08,.92),scale:1});
-    state.armedMaterial=null;
     renderInventory();renderPlaced();updateStep();drawScene(performance.now());
   }
 
@@ -406,7 +969,7 @@ button,input{font:inherit} button{color:inherit}
       const m=materialByKey(p.materialId);if(!m)return'';
       const stone=p.materialId==='stone';
       return `<div class="placed-material ${stone?'stone':'sample'}" data-placed="${p.uid}" style="left:${p.x*100}%;top:${p.y*100}%;transform:translate(-50%,-50%) scale(${p.scale})">
-        <div class="object">${stone?'':samplePreviewSvg(m,false)}</div>
+        <div class="object"></div>
         ${state.displayResult?'':`<button class="placed-remove" data-remove-placed="${p.uid}" aria-label="取り除く">×</button>`}
         <span class="material-index">${stone?'石':index+1}</span>
       </div>`;
@@ -417,12 +980,12 @@ button,input{font:inherit} button{color:inherit}
     ingredientLayer.querySelectorAll('[data-placed]').forEach(el=>{
       el.addEventListener('pointerdown',e=>{
         if(state.displayResult||state.mode!=='place'||e.target.closest('button'))return;
-        dragPlacedUid=el.dataset.placed;el.setPointerCapture?.(e.pointerId);e.preventDefault();
+        dragPlacedUid=el.dataset.placed;el.setPointerCapture?.(e.pointerId);e.preventDefault();e.stopPropagation();
       });
       el.addEventListener('pointermove',e=>{
         if(dragPlacedUid!==el.dataset.placed)return;
-        const r=wrap.getBoundingClientRect(),p=state.placed.find(v=>v.uid===dragPlacedUid);if(!p)return;
-        p.x=clamp((e.clientX-r.left)/r.width,.08,.92);p.y=clamp((e.clientY-r.top)/r.height,.08,.92);
+        const r=stageRect(),p=state.placed.find(v=>v.uid===dragPlacedUid);if(!p)return;
+        p.x=clamp((e.clientX-r.left)/Math.max(1,r.width),.08,.92);p.y=clamp((e.clientY-r.top)/Math.max(1,r.height),.08,.92);
         el.style.left=`${p.x*100}%`;el.style.top=`${p.y*100}%`;drawScene(performance.now());
       });
       el.addEventListener('pointerup',()=>{dragPlacedUid=null;});
@@ -434,26 +997,28 @@ button,input{font:inherit} button{color:inherit}
   wrap.addEventListener('drop',e=>{
     if(state.mode!=='place'||state.displayResult)return;
     e.preventDefault();const key=e.dataTransfer.getData('text/alchemy-material');if(!key)return;
-    const r=wrap.getBoundingClientRect();placeMaterial(key,(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height);
+    const r=stageRect();placeMaterial(key,(e.clientX-r.left)/Math.max(1,r.width),(e.clientY-r.top)/Math.max(1,r.height));
   });
 
   function onPointerDown(e){
+    if(e.target.closest?.('button,.placed-material'))return;
+    if(e.pointerType==='mouse'&&e.button!==0)return;
     if(state.displayResult)return;
     if(state.mode==='place'){
       if(state.armedMaterial){const p=normalizedPoint(e);placeMaterial(state.armedMaterial,p.x,p.y);}return;
     }
-    if(state.strokes.length>=3||ritual)return;
-    drawing=true;currentPoints=[eventPoint(e)];strokeStartedAt=performance.now();canvas.setPointerCapture?.(e.pointerId);drawScene(performance.now());
+    if(state.strokes.length>=maxGlyphsAllowed()||ritual)return;
+    drawing=true;currentPoints=[eventPoint(e)];strokeStartedAt=performance.now();wrap.setPointerCapture?.(e.pointerId);e.preventDefault();drawScene(performance.now());
   }
   function onPointerMove(e){if(!drawing)return;const p=eventPoint(e),last=currentPoints[currentPoints.length-1];if(!last||dist(p,last)>2)currentPoints.push(p);drawScene(performance.now());}
   function onPointerUp(e){
-    if(!drawing)return;drawing=false;canvas.releasePointerCapture?.(e.pointerId);
+    if(!drawing)return;drawing=false;wrap.releasePointerCapture?.(e.pointerId);
     if(currentPoints.length<8||pathLength(currentPoints)<36){currentPoints=[];drawScene(performance.now());return;}
     const duration=Math.max(180,performance.now()-strokeStartedAt),analysis=analyzeStroke(currentPoints,duration);
     state.strokes.push({points:currentPoints.slice(),analysis,color:state.colors[state.strokes.length]});currentPoints=[];
-    updateStep();startStrokePulse(state.strokes.length-1);drawScene(performance.now());
+    discoverGlyph(analysis.shape);updateStep();startStrokePulse(state.strokes.length-1);drawScene(performance.now());
   }
-  canvas.addEventListener('pointerdown',onPointerDown);canvas.addEventListener('pointermove',onPointerMove);canvas.addEventListener('pointerup',onPointerUp);canvas.addEventListener('pointercancel',onPointerUp);
+  wrap.addEventListener('pointerdown',onPointerDown);wrap.addEventListener('pointermove',onPointerMove);wrap.addEventListener('pointerup',onPointerUp);wrap.addEventListener('pointercancel',onPointerUp);
 
   function pathLength(points){let n=0;for(let i=1;i<points.length;i++)n+=dist(points[i-1],points[i]);return n;}
   function centroid(points){return points.reduce((a,p)=>({x:a.x+p.x/points.length,y:a.y+p.y/points.length}),{x:0,y:0});}
@@ -463,7 +1028,7 @@ button,input{font:inherit} button{color:inherit}
   function pointLineDistance(p,a,b){const dx=b.x-a.x,dy=b.y-a.y;if(!dx&&!dy)return dist(p,a);const t=((p.x-a.x)*dx+(p.y-a.y)*dy)/(dx*dx+dy*dy);return dist(p,{x:a.x+t*dx,y:a.y+t*dy});}
   function rdp(points,eps){if(points.length<3)return points;const a=points[0],b=points[points.length-1];let idx=-1,max=0;for(let i=1;i<points.length-1;i++){const d=pointLineDistance(points[i],a,b);if(d>max){max=d;idx=i;}}if(max>eps){const l=rdp(points.slice(0,idx+1),eps),r=rdp(points.slice(idx),eps);return l.slice(0,-1).concat(r);}return[a,b];}
   function analyzeStroke(points,duration){
-    const r=wrap.getBoundingClientRect(),b=bbox(points),center={x:(b.minX+b.maxX)/2,y:(b.minY+b.maxY)/2};
+    const r=stageSize(),b=bbox(points),center={x:(b.minX+b.maxX)/2,y:(b.minY+b.maxY)/2};
     const n=normalize(points),c=centroid(n),closure=dist(n[0],n[n.length-1]),radii=n.map(p=>dist(p,c)),mean=avg(radii),variance=Math.sqrt(avg(radii.map(v=>(v-mean)**2)))/(mean+.001),simple=rdp(n,.055),verts=Math.max(0,simple.length-1),lin=linearity(n);
     let shape='unknown';
     if(lin>.91&&closure>.36)shape='line';
@@ -483,8 +1048,18 @@ button,input{font:inherit} button{color:inherit}
     ctx.beginPath();for(let i=0;i<3;i++){const a=Math.PI/2+i*Math.PI*2/3,x=Math.cos(a)*s*.255,y=Math.sin(a)*s*.255;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.stroke();ctx.restore();
   }
 
+  function drawPlacedLiveMaterials(w,h,t){
+    state.placed.forEach(p=>{
+      if(p.materialId==='stone')return;
+      const material=materialByKey(p.materialId);
+      if(!material)return;
+      drawGeneratedResult(material,w,h,t,{x:p.x,y:p.y},.43*(p.scale||1),state.displayResult?.16:1);
+    });
+  }
+
   function drawScene(now){
-    const r=wrap.getBoundingClientRect();ctx.clearRect(0,0,r.width,r.height);drawSubtleCircle(r.width,r.height,ritual?ritual.rotation:0);
+    const r=stageSize();ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);ctx.restore();drawSubtleCircle(r.width,r.height,ritual?ritual.rotation:0);
+    drawPlacedLiveMaterials(r.width,r.height,now/1000);
     if(state.displayResult&&state.current){drawGeneratedResult(state.current,r.width,r.height,now/1000);}
     state.strokes.forEach((s,i)=>{ctx.save();if(ritual){const cx=r.width/2,cy=r.height/2;ctx.translate(cx,cy);ctx.rotate(ritual.angles[i]);ctx.translate(-cx,-cy);}drawPath(s.points,s.color,ritual?.alpha??.7,2.25);ctx.restore();});
     if(currentPoints.length)drawPath(currentPoints,state.colors[state.strokes.length],.94,2.65);
@@ -498,22 +1073,43 @@ button,input{font:inherit} button{color:inherit}
   }
 
   function updateStep(){
-    const i=state.strokes.length,stoneCount=state.placed.filter(p=>p.materialId==='stone').length;
-    if(state.displayResult){$('stepTitle').textContent='錬成結果を観察中';$('stepHelp').textContent='生成物は魔法陣の内部に直接形成されています。段階が進むほど動きや周囲への反応が増えます。';$('stepBadge').textContent='観察';}
-    else if(state.mode==='place'){$('stepTitle').textContent='材料を配置してください';$('stepHelp').textContent=stoneCount?'配置後、「紋様描画」へ切り替えて三つの紋様を重ねます。':'錬成には原基石が最低一つ必要です。研究成果は配置位置も結果へ影響します。';$('stepBadge').textContent=`材料 ${state.placed.length}/${MAX_PLACED}`;}
-    else{
-      const titles=['第一紋様を描いてください','第二紋様を描いてください','第三紋様を描いてください'];
-      const helps=['一筆で基質の傾向を与えます。位置・大きさ・速度も記録されます。','変化の仕方を与えます。材料と第一紋様との位置関係が反応形式を変えます。','構造の傾向を与えます。三つの配置全体が生成物の組み上がり方を決めます。'];
-      if(i<3){$('stepTitle').textContent=titles[i];$('stepHelp').textContent=helps[i];$('stepBadge').textContent=`${i+1} / 3`;}
-      else{$('stepTitle').textContent='錬成の準備が整いました';$('stepHelp').textContent='材料配置と三つの紋様から、魔法陣内へ結果を生成します。';$('stepBadge').textContent='準備完了';}
+    const i=state.strokes.length,materialCount=state.placed.length,maxGlyphs=maxGlyphsAllowed(),info=researchLevelInfo();
+    if(state.displayResult){
+      const category=state.current?.category||categoryFromGlyphCombination(state.current?.strokeSummary||[],state.current?.flags||{},state.current?.stats||{});
+      $('stepTitle').textContent='錬成結果';$('stepHelp').textContent='魔法陣の内部で形と動きを直接確認できます。';$('stepBadge').textContent=`${category}・第${state.current?.depth||1}層`;
+    }else if(state.mode==='place'){
+      $('stepTitle').textContent='材料を配置してください';
+      $('stepHelp').textContent=materialCount?'配置が終わったら、左下の「紋様配置へ」を押してください。':'材料一覧から一つ以上選び、魔法陣へ配置してください。';
+      $('stepBadge').textContent=`材料 ${materialCount}/${MAX_PLACED}`;
+    }else if(i===0){
+      $('stepTitle').textContent='第一紋様を描いてください';
+      $('stepHelp').textContent=`最大${maxGlyphs}つまで描けます。1つ描いた時点から錬成できます。`;
+      $('stepBadge').textContent=`0 / 最大 ${maxGlyphs}`;
+    }else if(i<maxGlyphs){
+      $('stepTitle').textContent=`${i}つの紋様を配置しました`;
+      $('stepHelp').textContent=`このまま錬成するか、第${ordinalJa(i)}紋様を追加できます。図形の組み合わせがカテゴリを決めます。`;
+      $('stepBadge').textContent=`${i} / 最大 ${maxGlyphs}`;
+    }else{
+      $('stepTitle').textContent='最大数の紋様を配置しました';
+      $('stepHelp').textContent=`${i}つの図形の組み合わせからカテゴリを決定します。`;
+      $('stepBadge').textContent=`Lv.${info.level}・${i}紋様`;
     }
-    const ready=!state.displayResult&&state.strokes.length===3&&stoneCount>0;
-    $('synthesizeBtn').hidden=!ready;$('newSynthesisBtn').hidden=!state.displayResult;
+    const ready=!state.displayResult&&state.mode==='draw'&&state.strokes.length>=1&&state.strokes.length<=maxGlyphs&&materialCount>0;
+    $('synthesizeBtn').hidden=!ready;
+    if(ready)$('synthesizeBtn').textContent=`この${state.strokes.length}紋様で錬成`;
+    $('newSynthesisBtn').hidden=!state.displayResult;
+    $('toDrawPhaseBtn').disabled=materialCount===0;
+    renderLevelUI();
   }
 
   function spatialAnalysis(strokes){
-    const centers=strokes.map(s=>s.analysis.center),sizes=strokes.map(s=>s.analysis.size/100),distances=[dist(centers[0],centers[1]),dist(centers[1],centers[2]),dist(centers[0],centers[2])],separation=avg(distances),sizeBalance=1-(Math.max(...sizes)-Math.min(...sizes));
-    const area=Math.abs((centers[1].x-centers[0].x)*(centers[2].y-centers[0].y)-(centers[1].y-centers[0].y)*(centers[2].x-centers[0].x)),linear=clamp(1-area*6,0,1),containment=centers.reduce((n,c,i)=>n+(dist(c,{x:.5,y:.5})<sizes[i]*.5?1:0),0)/3,overlap=clamp(1-separation/(avg(sizes)*1.5+.12),0,1);
+    const centers=strokes.map(s=>s.analysis.center),sizes=strokes.map(s=>s.analysis.size/100);
+    const distances=[];for(let i=0;i<centers.length;i++)for(let j=i+1;j<centers.length;j++)distances.push(dist(centers[i],centers[j]));
+    const separation=distances.length?avg(distances):0,sizeBalance=sizes.length?1-(Math.max(...sizes)-Math.min(...sizes)):1;
+    let linear=1;
+    if(centers.length>=3){let maxArea=0;for(let i=0;i<centers.length-2;i++)for(let j=i+1;j<centers.length-1;j++)for(let k=j+1;k<centers.length;k++){const a=Math.abs((centers[j].x-centers[i].x)*(centers[k].y-centers[i].y)-(centers[j].y-centers[i].y)*(centers[k].x-centers[i].x));maxArea=Math.max(maxArea,a);}linear=clamp(1-maxArea*6,0,1);}
+    const containment=centers.length?centers.reduce((n,c,i)=>n+(dist(c,{x:.5,y:.5})<(sizes[i]||.2)*.5?1:0),0)/centers.length:0;
+    const overlap=clamp(1-separation/((avg(sizes)||.2)*1.5+.12),0,1);
     return{separation,sizeBalance,linear,containment,overlap,centers,sizes};
   }
 
@@ -524,13 +1120,18 @@ button,input{font:inherit} button{color:inherit}
   }
 
   function synthesize(){
-    if(state.strokes.length!==3||ritual||state.displayResult)return;
+    const glyphCount=state.strokes.length,maxGlyphs=maxGlyphsAllowed();
+    if(glyphCount<1||glyphCount>maxGlyphs||ritual||state.displayResult)return;
     const placement=materialPlacementAnalysis();
-    if(!placement.stoneCount){showToast('原基石を最低一つ配置してください');setMode('place');return;}
+    if(!placement.count){showToast('材料を一つ以上配置してください');setMode('place');return;}
     $('synthesizeBtn').disabled=true;
-    const sourceColors=state.colors.slice(),dominance=chooseDominantStroke(state.strokes),selectedColor=sourceColors[dominance.index],colors=singleColorPalette(selectedColor),spatial=spatialAnalysis(state.strokes),stats=emptyStats(),roles=['substrate','activity','structure'];
-    addStats(stats,stoneStats,.45+Math.min(.28,(placement.stoneCount-1)*.10));
-    state.strokes.forEach((stroke,i)=>{addStats(stats,shapeContribution(stroke.analysis.shape,roles[i]),1);addStats(stats,colorContribution(sourceColors[i]),.72);stats.purity+=stroke.analysis.precision*.13;stats.transformation+=stroke.analysis.speed*.07*(i===1?1.35:.65);stats.stability+=(100-stroke.analysis.speed)*.045;stats.symmetry+=Math.max(0,1-dist(stroke.analysis.center,{x:.5,y:.5})*2)*6;});
+    const sourceColors=state.colors.slice(0,glyphCount),dominance=chooseDominantStroke(state.strokes),selectedColor=sourceColors[dominance.index],colors=singleColorPalette(selectedColor),spatial=spatialAnalysis(state.strokes),stats=emptyStats();
+    if(placement.stoneCount>0)addStats(stats,stoneStats,.45+Math.min(.28,(placement.stoneCount-1)*.10));
+    const influenceBudget=glyphCount===1?1.16:glyphCount===2?.92:glyphCount===3?.76:glyphCount===4?.64:.56;
+    state.strokes.forEach((stroke,i)=>{const weight=influenceBudget*(i<3?1:.88);addStats(stats,shapeContributionForCount(stroke.analysis.shape,i,glyphCount),weight);addStats(stats,colorContribution(sourceColors[i]),.56*weight);stats.purity+=stroke.analysis.precision*.14*weight;stats.transformation+=stroke.analysis.speed*.065*(i===1?1.18:.72)*weight;stats.stability+=(100-stroke.analysis.speed)*.05*weight;stats.symmetry+=Math.max(0,1-dist(stroke.analysis.center,{x:.5,y:.5})*2)*6*weight;});
+    if(glyphCount===1){stats.purity+=12;stats.stability+=8;}
+    if(glyphCount===2){stats.purity+=6;stats.transformation+=4;}
+    if(glyphCount>3){stats.transformation+=(glyphCount-3)*4;stats.memory+=(glyphCount-3)*4;stats.stability-=(glyphCount-3)*2;}
     const usedIds=[...new Set(state.placed.filter(p=>p.materialId!=='stone').map(p=>p.materialId))],used=usedIds.map(id=>state.inventory.find(m=>m.id===id)).filter(Boolean),depth=used.length?Math.max(...used.map(m=>m.depth||1))+1:1;
     used.forEach(m=>addStats(stats,m.stats,.43));
     stats.group+=spatial.separation*35+placement.spread*28;stats.containment+=spatial.containment*18+spatial.overlap*14+placement.centered*6;stats.symmetry+=spatial.sizeBalance*13;stats.transmission+=spatial.linear*17;stats.stability+=spatial.overlap*9;stats.division+=spatial.separation*13+placement.spread*10;
@@ -539,8 +1140,10 @@ button,input{font:inherit} button{color:inherit}
     normalizeStats(stats);
     const flags=deriveFlags(stats,depth,hasCore,sourceColors,spatial),material=createMaterial(stats,flags,colors,depth,used,state.strokes,spatial,placement,sourceColors,dominance);
     startRitual(()=>{
-      consumeMaterials(usedIds);state.inventory.unshift(material);state.current=material;state.synthesisCount++;state.displayResult=true;state.armedMaterial=null;
-      saveState();renderInventory();renderPlaced();renderObserver();renderNotebook();updateStep();showToast('魔法陣内に新しい試料が形成されました');$('synthesizeBtn').disabled=false;
+      const beforeLevel=researchLevelInfo(state.synthesisCount).level;
+      consumeMaterials(usedIds);normalizeMaterialRecord(material);state.inventory.unshift(material);state.current=material;state.synthesisCount++;state.displayResult=true;state.armedMaterial=null;
+      const afterInfo=researchLevelInfo(state.synthesisCount);saveState();renderInventory();renderPlaced();renderGlyphBook();updateStep();
+      showToast(afterInfo.level>beforeLevel?`研究 Lv.${afterInfo.level}へ上昇。最大紋様数が${afterInfo.glyphs}つに増えました`:`${material.category}カテゴリの試料が形成されました`);$('synthesizeBtn').disabled=false;
     });
   }
 
@@ -550,8 +1153,8 @@ button,input{font:inherit} button{color:inherit}
   }
 
   function createMaterial(stats,flags,colors,depth,parents,strokes,spatial,placement,sourceColors,dominance){
-    const code=String(state.synthesisCount+1).padStart(4,'0');
-    return{id:uid(),name:`試料 ${code}`,customName:false,className:classificationFrom(stats,flags),colors,sourceColors,dominantColorIndex:dominance.index,dominanceScores:dominance.scores,depth,stats,flags,traits:topTraits(stats,4),observations:[`第${['一','二','三'][dominance.index]}紋様の色相が表層全体へ定着した。`,...buildObservations(stats,flags,parents)],researchLevel:1,quantity:1,parents:parents.map(p=>p.id),createdAt:Date.now(),seed:Math.random()*10000,strokeSummary:strokes.map(s=>({shape:s.analysis.shape,size:Math.round(s.analysis.size),precision:s.analysis.precision,color:s.color,center:s.analysis.center})),spatial:{overlap:spatial.overlap,separation:spatial.separation,linear:spatial.linear},placement:{origin:{x:clamp(placement.center.x,.22,.78),y:clamp(placement.center.y,.22,.78)},spread:placement.spread,stoneCount:placement.stoneCount,count:placement.count}};
+    const code=String(state.synthesisCount+1).padStart(4,'0'),category=categoryFromGlyphCombination(strokes,flags,stats),glyphCombination=glyphCombinationLabel(strokes);
+    return{id:uid(),name:`${category}試料 ${code}`,customName:false,category,glyphCombination,className:classificationFrom(stats,flags),colors,sourceColors,dominantColorIndex:dominance.index,dominanceScores:dominance.scores,depth,stats,flags,traits:topTraits(stats,4),observations:[`${glyphCombination}の組み合わせから${category}カテゴリへ分岐した。`,`第${ordinalJa(dominance.index)}紋様の色相が表層全体へ定着した。`,...buildObservations(stats,flags,parents)],researchLevel:1,quantity:1,parents:parents.map(p=>p.id),createdAt:Date.now(),seed:Math.random()*10000,strokeSummary:strokes.map(s=>({shape:s.analysis.shape,size:Math.round(s.analysis.size),precision:s.analysis.precision,speed:s.analysis.speed,color:s.color,center:s.analysis.center})),spatial:{overlap:spatial.overlap,separation:spatial.separation,linear:spatial.linear},placement:{origin:{x:clamp(placement.center.x,.22,.78),y:clamp(placement.center.y,.22,.78)},spread:placement.spread,stoneCount:placement.stoneCount,count:placement.count}};
   }
 
   const traitMap={mineral:'鉱物性',liquid:'流動性',organic:'有機性',gas:'気相性',light:'発光性',heat:'熱性',growth:'伸長性',circulation:'循環性',absorption:'吸収性',transmission:'伝達性',regeneration:'再構成',division:'分離性',transformation:'変換性',stability:'安定性',purity:'均質性',autonomy:'自発性',memory:'履歴保持',symmetry:'対称性',containment:'内包性',branching:'分岐性',group:'群集性',density:'高密度'};
@@ -563,8 +1166,8 @@ button,input{font:inherit} button{color:inherit}
   }
 
   function startRitual(onComplete){
-    const start=performance.now(),duration=1450;ritual={angles:[0,0,0],rotation:0,alpha:.8,flash:0};
-    function tick(now){const t=Math.min(1,(now-start)/duration),ease=1-Math.pow(1-t,4);ritual.angles=[ease*Math.PI*2,-ease*Math.PI*4,ease*Math.PI*6];ritual.rotation=ease*Math.PI*2;ritual.alpha=.68+t*.16;ritual.flash=t>.78?Math.sin(((t-.78)/.22)*Math.PI):0;drawScene(now);if(t<1)requestAnimationFrame(tick);else{ritual=null;onComplete();}}
+    const start=performance.now(),duration=1450;ritual={angles:Array.from({length:state.strokes.length},()=>0),rotation:0,alpha:.8,flash:0};
+    function tick(now){const t=Math.min(1,(now-start)/duration),ease=1-Math.pow(1-t,4);ritual.angles=state.strokes.map((_,i)=>ease*Math.PI*2*(i+1)*(i%2?-1:1));ritual.rotation=ease*Math.PI*2;ritual.alpha=.68+t*.16;ritual.flash=t>.78?Math.sin(((t-.78)/.22)*Math.PI):0;drawScene(now);if(t<1)requestAnimationFrame(tick);else{ritual=null;onComplete();}}
     requestAnimationFrame(tick);
   }
 
@@ -576,43 +1179,39 @@ button,input{font:inherit} button{color:inherit}
   function newSynthesis(){state.strokes=[];state.placed=[];state.armedMaterial=null;state.displayResult=false;currentPoints=[];setMode('place');renderPlaced();renderInventory();updateStep();drawScene(performance.now());}
 
   function renderInventory(){
-    const grid=$('inventoryGrid');$('inventoryCount').textContent=`原基石 + ${state.inventory.length}試料`;
-    const slots=[`<div class="inventory-slot ${state.armedMaterial==='stone'?'armed':''}" draggable="true" data-material-key="stone"><div class="inventory-icon"><div class="inventory-stone"></div></div><div class="inventory-name">原基石</div><div class="inventory-meta">∞</div></div>`];
-    state.inventory.forEach(m=>slots.push(`<div class="inventory-slot ${state.armedMaterial===m.id?'armed':''}" draggable="true" data-material-key="${m.id}"><button class="inventory-info" data-observe="${m.id}" aria-label="観察">i</button><div class="inventory-icon"><div class="inventory-sample">${samplePreviewSvg(m,true)}</div></div><div class="inventory-name">${escapeHtml(m.name)}</div><div class="inventory-meta">第${m.depth}層</div></div>`));
-    if(!state.inventory.length)slots.push('<div class="inventory-empty">原基石から最初の試料を錬成すると、ここへ新しい材料枠が追加されます。</div>');
+    const grid=$('inventoryGrid');$('inventoryCount').textContent=`Lv.${researchLevelInfo().level}・原基石 + ${state.inventory.length}試料`;
+    const selected=state.armedMaterial?materialByKey(state.armedMaterial):null;
+    const selectedCard=$('selectedMaterialCard'),selectedState=$('selectedMaterialState'),selectedDab=$('selectedMaterialDab');
+    $('selectedMaterialName').textContent=selected?selected.name:'未選択';
+    selectedState.textContent=selected?'選択中':'材料を選択';
+    $('selectedMaterialMeta').textContent=selected?(selected.id==='stone'?'石・無限':`${selected.category||categoryFromGlyphCombination(selected.strokeSummary||[],selected.flags,selected.stats)}・第${selected.depth}層`):'一覧から材料を選択';
+    selectedCard.classList.toggle('is-active',Boolean(selected));selectedCard.classList.toggle('is-empty',!selected);
+    if(selected){
+      if(selected.id==='stone')selectedDab.innerHTML='<div class="selected-stone-shape"></div>';
+      else selectedDab.innerHTML=`<div class="selected-sample-shape">${samplePreviewSvg(selected,false)}</div>`;
+      const summaries=selected.strokeSummary||[],visualSize=selected.id==='stone'?34:Math.min(48,30+(selected.depth||1)*2+avg(summaries.map(s=>s.size||30))*.08);
+      selectedDab.style.setProperty('--selected-icon-size',`${visualSize}px`);
+      selectedDab.style.borderColor=categoryColor(selected.category||'石');
+    }else{selectedDab.innerHTML='';selectedDab.style.removeProperty('--selected-icon-size');selectedDab.style.borderColor='#b9bdb7';}
+    const slots=[`<div class="inventory-slot ${state.armedMaterial==='stone'?'armed':''}" style="--dab-size:21px;--category-color:${categoryColor('石')}" draggable="true" data-material-key="stone" title="原基石（無限）"><span class="inventory-category-dot"></span><div class="inventory-icon"><div class="inventory-stone"></div></div><div class="inventory-name">原基石</div><div class="inventory-meta">∞</div></div>`];
+    state.inventory.forEach(m=>{m=normalizeMaterialRecord(m);const dab=Math.min(29,18+(m.depth||1)*2),category=m.category||categoryFromGlyphCombination(m.strokeSummary||[],m.flags,m.stats);slots.push(`<div class="inventory-slot ${state.armedMaterial===m.id?'armed':''}" style="--dab-size:${dab}px;--category-color:${categoryColor(category)}" draggable="true" data-material-key="${m.id}" title="${escapeHtml(m.name)}・${category}・第${m.depth}層"><span class="inventory-category-dot"></span><div class="inventory-icon"><div class="inventory-sample">${samplePreviewSvg(m,true)}</div></div><div class="inventory-name">${escapeHtml(m.name)}</div><div class="inventory-meta">${category}</div></div>`);});
+    if(!state.inventory.length)slots.push('<div class="inventory-empty">原基石から最初の試料を錬成すると、ここへ新しい材料が追加されます。</div>');
     grid.innerHTML=slots.join('');
     grid.querySelectorAll('[data-material-key]').forEach(slot=>{
       const key=slot.dataset.materialKey;
-      slot.addEventListener('dragstart',e=>{if(state.displayResult){e.preventDefault();return;}e.dataTransfer.setData('text/alchemy-material',key);e.dataTransfer.effectAllowed='copy';setMode('place');});
-      slot.addEventListener('click',e=>{if(e.target.closest('[data-observe]'))return;if(state.displayResult){showToast('「次の錬成へ」を押してから材料を配置できます');return;}state.armedMaterial=state.armedMaterial===key?null:key;setMode('place');renderInventory();$('placementStatus').textContent=state.armedMaterial?`${materialByKey(key).name}を選択中。魔法陣をタップして配置します`:'インベントリの材料を選択、またはドラッグしてください';});
+      slot.addEventListener('dragstart',e=>{if(state.displayResult||state.mode!=='place'){e.preventDefault();return;}e.dataTransfer.setData('text/alchemy-material',key);e.dataTransfer.effectAllowed='copy';});
+      slot.addEventListener('click',()=>{if(state.displayResult){showToast('「次の錬成」を押してから材料を配置できます');return;}if(state.mode!=='place')return;state.armedMaterial=state.armedMaterial===key?null:key;renderInventory();updateStep();});
     });
-    grid.querySelectorAll('[data-observe]').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();state.current=state.inventory.find(m=>m.id===btn.dataset.observe)||state.current;saveState();renderObserver();}));
   }
 
-  function renderObserver(){
-    const m=state.current;$('researchBtn').disabled=!m;$('renameBtn').disabled=!m;
-    if(!m){$('specimenName').textContent='未観察';$('classification').textContent='記録なし';$('observations').innerHTML='<div class="observation locked">錬成後に観察記録が表示されます</div>';return;}
-    $('specimenName').textContent=m.name;$('classification').textContent=m.className;const reveal=Math.min(m.observations.length,2+(m.researchLevel||1));
-    $('observations').innerHTML=m.observations.slice(0,reveal).map(o=>`<div class="observation">${escapeHtml(o)}</div>`).join('')+(reveal<m.observations.length?'<div class="observation locked">追加観察で未確認の反応を調べられます</div>':'');
-  }
-
-  function renderNotebook(){
-    $('synthesisCount').textContent=state.synthesisCount;$('maxDepth').textContent=state.inventory.length?Math.max(...state.inventory.map(m=>m.depth||1)):0;const phenomena=state.inventory.filter(m=>Object.values(m.flags||{}).some(Boolean)).length;$('phenomenaCount').textContent=phenomena;
-    const hasCore=state.inventory.some(m=>m.flags?.transmutativeCore),hasSelf=state.inventory.some(m=>m.flags?.selfMaintaining),hasAnthropic=state.inventory.some(m=>m.flags?.anthropic);
-    $('routeNote').textContent=hasAnthropic?'作成者に選択反応を示す統合構造が確認されています。正体と意識の有無は評価できません。':hasSelf?'外部入力なしで自己状態を維持する試料が確認されました。対称性・情報保持・伝達構造を高める研究余地があります。':hasCore?'反応後も減少しにくい高密度変換媒質が確認されました。循環・再構成・自発性を持つ構造との統合が次の研究候補です。':'高い変換性・再構成性・安定性を同じ試料へ集積すると、通常の石反応を越える媒質へ進む可能性があります。';
-  }
-
-  function researchCurrent(){const m=state.current;if(!m)return;if((m.researchLevel||1)<m.observations.length-1){m.researchLevel=(m.researchLevel||1)+1;showToast('新しい観察記録を追加しました');}else showToast('現在確認できる反応はすべて記録済みです');saveState();renderObserver();}
-  function renameCurrent(){const m=state.current;if(!m)return;const name=prompt('この試料に名称を付けてください',m.name);if(name&&name.trim()){m.name=name.trim().slice(0,24);m.customName=true;saveState();renderInventory();renderObserver();}}
-  function clearData(){if(!confirm('材料インベントリと研究記録をすべて初期化しますか？'))return;localStorage.removeItem(STORAGE_KEY);state.inventory=[];state.strokes=[];state.placed=[];state.current=null;state.synthesisCount=0;state.colors=defaultColors.slice();state.displayResult=false;defaultColors.forEach((c,i)=>$(`color${i+1}`).value=c);resetWorkbench();renderObserver();renderNotebook();showToast('研究記録を初期化しました');}
   function escapeHtml(v){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
   function showToast(text){const t=$('toast');t.textContent=text;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1800);}
 
   function materialGradient(context,m,x,y,r){const g=context.createRadialGradient(x-r*.3,y-r*.35,2,x,y,r);g.addColorStop(0,rgba(m.colors[0],.92));g.addColorStop(.55,rgba(m.colors[1],.88));g.addColorStop(1,rgba(m.colors[2],.88));return g;}
 
-  function drawGeneratedResult(m,w,h,t){
-    const origin=m.placement?.origin||{x:.5,y:.5},cx=origin.x*w,cy=origin.y*h,s=m.stats,avgSize=avg((m.strokeSummary||[]).map(v=>v.size||35)),base=24+avgSize*.32+m.depth*3.5,moveLevel=m.depth>=2?Math.min(1,(m.depth-1)*.22+s.autonomy/130):0;
-    ctx.save();
+  function drawGeneratedResult(m,w,h,t,overrideOrigin=null,sizeScale=1,opacity=1){
+    m=normalizeMaterialRecord(m);const origin=overrideOrigin||m.placement?.origin||{x:.5,y:.5},cx=clamp(origin.x,0,1)*w,cy=clamp(origin.y,0,1)*h,s=m.stats,avgSize=clamp(avg((m.strokeSummary||[]).map(v=>clamp(v.size||35,6,100))),6,100),rawBase=(24+avgSize*.32+m.depth*3.5)*sizeScale,maxBase=overrideOrigin?Math.min(w,h)*.075:Math.min(w,h)*.22,base=clamp(rawBase,8,maxBase),moveLevel=m.depth>=2?Math.min(1,(m.depth-1)*.22+s.autonomy/130):0;
+    ctx.save();ctx.globalAlpha=opacity;
     const halo=ctx.createRadialGradient(cx,cy,4,cx,cy,base*2.5);halo.addColorStop(0,rgba(blendColors(m.colors),.07));halo.addColorStop(1,rgba(m.colors[0],0));ctx.fillStyle=halo;ctx.beginPath();ctx.arc(cx,cy,base*2.5,0,Math.PI*2);ctx.fill();
     if(m.flags?.darkCenter){ctx.fillStyle='rgba(40,43,42,.08)';ctx.beginPath();ctx.arc(cx,cy,base*1.7,0,Math.PI*2);ctx.fill();}
 
@@ -628,24 +1227,55 @@ button,input{font:inherit} button{color:inherit}
   }
 
   function drawCoreBody(m,cx,cy,r,t,motion){
-    const s=m.stats,points=20,waveCount=2+Math.round(s.symmetry/25),breath=1+Math.sin(t*(.4+s.circulation/80)+m.seed)*.025*motion;
-    ctx.save();ctx.translate(cx,cy);ctx.rotate(Math.sin(t*.16+m.seed)*.08*motion);ctx.fillStyle=materialGradient(ctx,m,0,0,r*1.45);ctx.strokeStyle=rgba(m.colors[2],.34);ctx.lineWidth=.9;
-    ctx.beginPath();for(let i=0;i<points;i++){const a=i*Math.PI*2/points,wave=Math.sin(a*waveCount+t*(.18+s.autonomy/230)+m.seed)*(.045+s.transformation/1200),rr=r*breath*(1+wave)+(i%2?s.branching*.018:0),x=Math.cos(a)*rr,y=Math.sin(a)*rr*(.83+s.liquid/600);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
+    const s=m.stats,family=categoryFamily(m.category),phase=t*.22+m.seed,breath=1+Math.sin(t*(.4+s.circulation/80)+m.seed)*.025*motion;
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(Math.sin(t*.16+m.seed)*.08*motion);ctx.fillStyle=materialGradient(ctx,m,0,0,r*1.55);ctx.strokeStyle=rgba(m.colors[2],.34);ctx.lineWidth=.9;
+    if(family==='水状'){
+      ctx.beginPath();for(let i=0;i<28;i++){const a=i*Math.PI*2/28,w=Math.sin(a*4+phase)*.08,rr=r*breath*(1.02+w),x=Math.cos(a)*rr,y=Math.sin(a)*rr*(1.18+Math.cos(a+phase)*.08);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fill();ctx.stroke();
+    }else if(family==='石質'){
+      const q=r*1.08;ctx.beginPath();for(let i=0;i<4;i++){const a=Math.PI/4+i*Math.PI/2,x=Math.cos(a)*q,y=Math.sin(a)*q;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fill();ctx.stroke();
+    }else if(family==='鉱石'){
+      ctx.beginPath();for(let i=0;i<6;i++){const a=-Math.PI/2+i*Math.PI*2/6,rr=r*(i%2?1.24:.78),x=Math.cos(a)*rr,y=Math.sin(a)*rr;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fill();ctx.stroke();
+    }else if(family==='気体状'){
+      ctx.globalAlpha*=.72;for(let i=0;i<4;i++){ctx.beginPath();ctx.ellipse(Math.cos(phase+i)*r*.26,Math.sin(phase*.8+i)*r*.16,r*(.62+i*.08),r*(.34+i*.05),phase*.3+i,0,Math.PI*2);ctx.fill();}ctx.globalAlpha/=.72;
+    }else if(family==='発光体'){
+      ctx.beginPath();ctx.arc(0,0,r*.82,0,Math.PI*2);ctx.fill();ctx.stroke();
+    }else if(family==='植物状'){
+      ctx.beginPath();ctx.ellipse(0,0,r*.78,r*1.12,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+    }else if(family==='生物状'){
+      ctx.beginPath();ctx.moveTo(0,-r*1.12);ctx.bezierCurveTo(r*.92,-r*.72,r*.74,r*.88,0,r*1.12);ctx.bezierCurveTo(-r*.74,r*.88,-r*.92,-r*.72,0,-r*1.12);ctx.closePath();ctx.fill();ctx.stroke();
+    }else if(family==='秘奥'){
+      ctx.beginPath();for(let i=0;i<5;i++){const a=-Math.PI/2+i*Math.PI*2/5,x=Math.cos(a)*r*.95,y=Math.sin(a)*r*.95;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fill();ctx.stroke();
+    }else{
+      const points=20,waveCount=2+Math.round(s.symmetry/25);ctx.beginPath();for(let i=0;i<points;i++){const a=i*Math.PI*2/points,wave=Math.sin(a*waveCount+phase)*(.045+s.transformation/1200),rr=r*breath*(1+wave),x=Math.cos(a)*rr,y=Math.sin(a)*rr*(.92+s.liquid/620);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.fill();ctx.stroke();
+    }
+    ctx.restore();
   }
 
   function drawPrimarySilhouette(m,cx,cy,r,t,motion){
-    const summaries=m.strokeSummary||[],primary=summaries[m.dominantColorIndex||0]||summaries[0];
-    if(!primary)return;
-    const phase=t*.18+m.seed,accent=m.colors[2];
+    const family=categoryFamily(m.category),phase=t*.18+m.seed,accent=m.colors[2];
     ctx.save();ctx.translate(cx,cy);ctx.rotate(Math.sin(phase)*.06*motion);ctx.strokeStyle=rgba(accent,.30);ctx.fillStyle=rgba(m.colors[0],.16);ctx.lineWidth=1.15;
-    if(primary.shape==='circle'){
-      const lobes=4+Math.round((primary.size||35)/28);ctx.beginPath();for(let i=0;i<36;i++){const a=i*Math.PI*2/36,rr=r*(1.12+Math.sin(a*lobes+phase)*.10),x=Math.cos(a)*rr,y=Math.sin(a)*rr*.82;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.stroke();
-    }else if(primary.shape==='triangle'||primary.shape==='inverted'){
-      const dir=primary.shape==='inverted'?1:-1,branches=3+Math.round((primary.precision||50)/34);for(let i=0;i<branches;i++){const a=dir*Math.PI/2+(i-(branches-1)/2)*.34;ctx.beginPath();ctx.moveTo(0,r*.18*dir);ctx.quadraticCurveTo(Math.cos(a+.42)*r*.72,Math.sin(a+.42)*r*.72,Math.cos(a)*r*1.38,Math.sin(a)*r*1.38);ctx.stroke();}
-    }else if(primary.shape==='square'){
-      const layers=2+Math.round((primary.size||35)/30);for(let i=0;i<layers;i++){const q=r*(.72+i*.22);ctx.beginPath();for(let k=0;k<4;k++){const a=Math.PI/4+k*Math.PI/2,x=Math.cos(a)*q,y=Math.sin(a)*q;k?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.stroke();}
+    if(family==='水状'){
+      for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(0,0,r*(.55+i*.24),phase*.22+i*.6,phase*.22+Math.PI*.9+i*.6);ctx.stroke();}
+    }else if(family==='石質'){
+      for(let i=0;i<3;i++){const q=r*(.62+i*.2);ctx.beginPath();for(let k=0;k<4;k++){const a=Math.PI/4+k*Math.PI/2,x=Math.cos(a)*q,y=Math.sin(a)*q;k?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.closePath();ctx.stroke();}
+    }else if(family==='鉱石'){
+      const spikes=5+Math.round((m.depth||1)/2);for(let i=0;i<spikes;i++){const a=-Math.PI/2+i*Math.PI*2/spikes;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(a)*r*1.34,Math.sin(a)*r*1.34);ctx.stroke();}
+    }else if(family==='気体状'){
+      for(let i=0;i<4;i++){const y=(i-1.5)*r*.2;ctx.beginPath();ctx.moveTo(-r*1.25,y);ctx.bezierCurveTo(-r*.45,y+Math.sin(phase+i)*r*.42,r*.45,y-Math.sin(phase+i)*r*.42,r*1.25,y);ctx.stroke();}
+    }else if(family==='発光体'){
+      for(let i=0;i<8;i++){const a=i*Math.PI*2/8+phase*.2;ctx.beginPath();ctx.moveTo(Math.cos(a)*r*.9,Math.sin(a)*r*.9);ctx.lineTo(Math.cos(a)*r*1.48,Math.sin(a)*r*1.48);ctx.stroke();}
+    }else if(family==='植物状'){
+      ctx.beginPath();ctx.moveTo(0,r*.2);ctx.lineTo(0,-r*1.18);ctx.stroke();
+      for(let i=0;i<4;i++){const dir=i%2?1:-1,yy=-r*.2-i*r*.22;ctx.beginPath();ctx.ellipse(dir*r*.36,yy,r*.34,r*.15,dir*.65,0,Math.PI*2);ctx.stroke();}
+    }else if(family==='生物状'){
+      ctx.beginPath();ctx.moveTo(0,-r*.82);ctx.lineTo(0,r*.82);ctx.stroke();
+      for(let i=0;i<3;i++){const yy=-r*.38+i*r*.38;ctx.beginPath();ctx.moveTo(-r*.28,yy);ctx.quadraticCurveTo(-r*.74,yy-r*.18,-r*.9,yy+r*.12);ctx.moveTo(r*.28,yy);ctx.quadraticCurveTo(r*.74,yy-r*.18,r*.9,yy+r*.12);ctx.stroke();}
+      ctx.fillStyle=rgba(m.colors[2],.35);ctx.beginPath();ctx.arc(-r*.18,-r*.22,2.2,0,Math.PI*2);ctx.arc(r*.18,-r*.22,2.2,0,Math.PI*2);ctx.fill();
+    }else if(family==='秘奥'){
+      for(let i=0;i<5;i++){const a=-Math.PI/2+i*Math.PI*2/5;ctx.beginPath();ctx.moveTo(Math.cos(a)*r*.42,Math.sin(a)*r*.42);ctx.lineTo(Math.cos(a)*r*1.48,Math.sin(a)*r*1.48);ctx.stroke();}
+      ctx.beginPath();ctx.arc(0,0,r*1.24,0,Math.PI*2);ctx.stroke();
     }else{
-      const strands=3+Math.round((primary.precision||50)/30);for(let i=0;i<strands;i++){const y=(i-(strands-1)/2)*r*.16;ctx.beginPath();ctx.moveTo(-r*1.25,y);ctx.bezierCurveTo(-r*.45,y+Math.sin(phase+i)*r*.42,r*.45,y-Math.sin(phase+i)*r*.42,r*1.25,y);ctx.stroke();}
+      ctx.beginPath();ctx.arc(0,0,r*1.05,0,Math.PI*2);ctx.stroke();
     }
     ctx.restore();
   }
@@ -673,15 +1303,24 @@ button,input{font:inherit} button{color:inherit}
 
   function animate(now){drawScene(now);animationFrame=requestAnimationFrame(animate);}
 
+  function clearData(){
+    if(!window.confirm('保存した試料と研究記録を初期化しますか？'))return;
+    localStorage.removeItem(STORAGE_KEY);
+    state.inventory=[];state.current=null;state.synthesisCount=0;state.strokes=[];state.placed=[];
+    state.armedMaterial=null;state.displayResult=false;currentPoints=[];ritual=null;
+    state.colors=defaultColors.slice();state.glyphBook={};
+    ['color1','color2','color3','color4','color5'].forEach((id,i)=>{const input=$(id);if(input)input.value=state.colors[i];});
+    setMode('place');renderInventory();renderPlaced();renderGlyphBook();renderLevelUI();updateStep();resizeCanvas();showToast('研究記録を初期化しました');
+  }
+
   $('synthesizeBtn').addEventListener('click',synthesize);
   $('newSynthesisBtn').addEventListener('click',newSynthesis);
-  $('researchBtn').addEventListener('click',researchCurrent);
-  $('renameBtn').addEventListener('click',renameCurrent);
   $('clearDataBtn').addEventListener('click',clearData);
-  ['color1','color2','color3'].forEach((id,i)=>{const input=$(id);input.value=state.colors[i];input.addEventListener('input',()=>{state.colors[i]=input.value;if(state.strokes[i])state.strokes[i].color=input.value;saveState();drawScene(performance.now());});});
+  ['color1','color2','color3','color4','color5'].forEach((id,i)=>{const input=$(id);input.value=state.colors[i];input.addEventListener('input',()=>{state.colors[i]=input.value;if(state.strokes[i])state.strokes[i].color=input.value;saveState();drawScene(performance.now());});});
   window.addEventListener('resize',resizeCanvas);
+  if('ResizeObserver' in window){new ResizeObserver(()=>resizeCanvas()).observe(wrap);}
 
-  renderInventory();renderPlaced();renderObserver();renderNotebook();setMode('place');requestAnimationFrame(resizeCanvas);animationFrame=requestAnimationFrame(animate);
+  renderInventory();renderPlaced();renderGlyphBook();renderLevelUI();setMode(state.displayResult?'result':'place');requestAnimationFrame(resizeCanvas);animationFrame=requestAnimationFrame(animate);
 })();
 </script>
 </body>
